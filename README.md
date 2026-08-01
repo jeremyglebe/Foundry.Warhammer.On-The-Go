@@ -1,12 +1,15 @@
 # WFRP On The Go
 
-Mobile-first GM prep tools for WFRP4e in Foundry VTT.
+WFRP On The Go adds role-aware mobile companion views to WFRP4e on Foundry VTT 14.
 
-This early release provides the first On The Go shell:
+Current features:
 
-- a fullscreen mobile replacement UI;
-- a main menu for module tools;
-- a mobile journal browser and reader;
-- in-shell activation settings for enabled GM users, viewport threshold, and forced mobile mode.
+- a full-screen GM prep menu with Journals and module Settings;
+- per-user activation and a configurable device-width threshold;
+- a read-only Player view of the current user's assigned character;
+- wounds, Fate/Fortune, Resolve/Resilience/Advantage, XP, characteristics, searchable skills, and
+  talents;
+- actionable states when a player has no usable Character assignment.
 
-The module is built for Foundry VTT with the WFRP4e system.
+Enabled GMs always receive the GM view. Enabled non-GMs receive the Player view. The module is built
+for the WFRP4e system and does not expose other actors to a player.

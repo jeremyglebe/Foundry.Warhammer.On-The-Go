@@ -1,15 +1,15 @@
 {
   "id": "wfrp4e-on-the-go",
   "title": "WFRP On The Go",
-  "description": "Mobile-first GM prep tools for WFRP4e in Foundry VTT.",
-  "version": "0.0.3",
+  "description": "Mobile-first WFRP4e companion tools for players and GMs in Foundry VTT.",
+  "version": "0.1.0",
   "authors": [
     {
       "name": "Jeremy Glebe"
     }
   ],
   "compatibility": {
-    "minimum": "13",
+    "minimum": "14",
     "verified": "14"
   },
   "relationships": {
@@ -35,5 +35,5 @@
   ],
   "url": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go",
   "manifest": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go/releases/latest/download/module.json",
-  "download": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go/releases/download/v0.0.3/module.zip"
+  "download": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go/releases/download/v0.1.0/module.zip"
 }
