@@ -4383,6 +4383,7 @@ function Mu(e, t, n) {
 //#endregion
 //#region src/module/apps/player-shell/PlayerShellApplication.ts
 var Nu = class extends Yc {
+	#e;
 	static DEFAULT_OPTIONS = {
 		...super.DEFAULT_OPTIONS,
 		id: `${Z}-player-shell`,
@@ -4407,7 +4408,12 @@ var Nu = class extends Yc {
 		return { characterState: _u() };
 	}
 	_replaceHTML(e, t, n) {
-		Qc(), super._replaceHTML(e, t, n);
+		Qc(), super._replaceHTML(e, t, n), this.#e ??= Hooks.on("updateActor", (e) => {
+			e.id === game.user.character?.id && this.render(!0);
+		});
+	}
+	async _preClose(e) {
+		this.#e !== void 0 && (Hooks.off("updateActor", this.#e), this.#e = void 0), await super._preClose(e);
 	}
 }, Pu = { class: "starter-workbench" }, Fu = {
 	class: "starter-workbench__panel",
