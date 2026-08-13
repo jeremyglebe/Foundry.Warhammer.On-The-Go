@@ -3214,7 +3214,7 @@ var Ao = { class: "mobile-journal-shell__folders" }, jo = ["aria-expanded", "onC
 		function S() {
 			n.value = !1;
 		}
-		return (e, t) => (W(), G("main", is, [K("header", as, [t[2] ||= K("div", null, [K("p", null, "WFRP On The Go"), K("h1", null, "Journals")], -1), K("span", os, O(o.value.length), 1)]), n.value ? l.value ? (W(), Vi(rs, {
+		return (e, t) => (W(), G("main", is, [K("header", as, [t[2] ||= K("div", null, [K("p", null, "Drowsy's WFRP4e On The Go"), K("h1", null, "Journals")], -1), K("span", os, O(o.value.length), 1)]), n.value ? l.value ? (W(), Vi(rs, {
 			key: 1,
 			"page-id": a.value,
 			"onUpdate:pageId": t[1] ||= (e) => a.value = e,
@@ -3307,7 +3307,7 @@ var Ao = { class: "mobile-journal-shell__folders" }, jo = ["aria-expanded", "onC
 				class: "fa-solid fa-chevron-left",
 				"aria-hidden": "true"
 			}, null, -1)]])),
-			K("div", null, [u[5] ||= K("p", null, "WFRP On The Go", -1), K("h1", null, O(o.value), 1)]),
+			K("div", null, [u[5] ||= K("p", null, "Drowsy's WFRP4e On The Go", -1), K("h1", null, O(o.value), 1)]),
 			u[6] ||= K("span", {
 				class: "on-the-go-shell__top-bar-spacer",
 				"aria-hidden": "true"
@@ -3380,7 +3380,7 @@ var Ao = { class: "mobile-journal-shell__folders" }, jo = ["aria-expanded", "onC
 			])
 		], 32))]));
 	}
-}), X = "wfrp4e-on-the-go", Es = "WFRP On The Go", Ds = "wfrp4e", Os = {
+}), X = "wfrp4e-on-the-go", Es = "Drowsy's WFRP4e On The Go", Ds = "wfrp4e", Os = {
 	id: "world",
 	label: "World Journals",
 	type: "world"
@@ -4313,7 +4313,7 @@ var el = class extends Xc {
 			i[4] ||= K("footer", { class: "tw:border-t tw:border-base-300 tw:p-4 tw:text-xs tw:opacity-65" }, [K("i", {
 				class: "fa-solid fa-scroll tw:mr-2 tw:text-secondary",
 				"aria-hidden": "true"
-			}), Xi(" WFRP On The Go ")], -1)
+			}), Xi(" Drowsy's WFRP4e On The Go ")], -1)
 		]));
 	}
 }), yu = {
@@ -4522,7 +4522,7 @@ var el = class extends Xc {
 					class: "fa-solid fa-bars",
 					"aria-hidden": "true"
 				}, null, -1), Xi(" Menu ", -1)]], 8, bd)]),
-				K("div", xd, [K("div", Sd, [s[3] ||= K("p", { class: "tw:m-0 tw:text-[0.6rem] tw:font-black tw:tracking-[0.14em] tw:text-secondary tw:uppercase" }, " WFRP On The Go ", -1), K("strong", Cd, O(i.value), 1)])]),
+				K("div", xd, [K("div", Sd, [s[3] ||= K("p", { class: "tw:m-0 tw:text-[0.6rem] tw:font-black tw:tracking-[0.14em] tw:text-secondary tw:uppercase" }, " Drowsy's WFRP4e On The Go ", -1), K("strong", Cd, O(i.value), 1)])]),
 				K("div", wd, [K("span", {
 					class: "tw:dui-badge tw:dui-badge-ghost tw:dui-badge-sm",
 					role: "status",
@@ -4982,7 +4982,7 @@ var Df = class extends Xc {
 	},
 	setup(e) {
 		return (t, n) => (W(), G("main", Of, [
-			n[3] ||= K("header", { class: "starter-workbench__header" }, [K("p", { class: "starter-workbench__eyebrow" }, "WFRP On The Go"), K("h1", null, "Diagnostic Workbench")], -1),
+			n[3] ||= K("header", { class: "starter-workbench__header" }, [K("p", { class: "starter-workbench__eyebrow" }, "Drowsy's WFRP4e On The Go"), K("h1", null, "Diagnostic Workbench")], -1),
 			K("section", kf, [n[2] ||= K("h2", { id: "status-heading" }, "Runtime Context", -1), K("dl", Af, [K("div", null, [n[0] ||= K("dt", null, "User", -1), K("dd", null, O(e.hostName), 1)]), K("div", null, [n[1] ||= K("dt", null, "System", -1), K("dd", null, O(e.systemId), 1)])])]),
 			n[4] ||= K("section", {
 				class: "starter-workbench__panel",
@@ -5079,7 +5079,7 @@ var If = { class: "wfrp-on-the-go-settings" }, Lf = {
 		function s() {
 			return t.users.filter((e) => e.enabled).map((e) => e.id);
 		}
-		return (t, s) => (W(), G("main", If, [s[1] ||= K("header", { class: "wfrp-on-the-go-settings__header" }, [K("p", { class: "wfrp-on-the-go-settings__eyebrow" }, "WFRP On The Go"), K("h1", null, "Enabled Users")], -1), K("form", {
+		return (t, s) => (W(), G("main", If, [s[1] ||= K("header", { class: "wfrp-on-the-go-settings__header" }, [K("p", { class: "wfrp-on-the-go-settings__eyebrow" }, "Drowsy's WFRP4e On The Go"), K("h1", null, "Enabled Users")], -1), K("form", {
 			class: "wfrp-on-the-go-settings__form",
 			onSubmit: Co(o, ["prevent"])
 		}, [a.value ? (W(), G("div", Lf, [(W(!0), G(H, null, z(e.users, (e) => (W(), G("label", {

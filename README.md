@@ -1,6 +1,6 @@
-# WFRP On The Go
+# Drowsy's WFRP4e On The Go
 
-WFRP On The Go adds role-aware mobile companion views to WFRP4e on Foundry VTT 14.
+Drowsy's WFRP4e On The Go adds role-aware mobile companion views to WFRP4e on Foundry VTT 14.
 
 Current features:
 
