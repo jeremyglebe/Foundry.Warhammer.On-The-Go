@@ -4413,7 +4413,78 @@ var Tu = {
 			])
 		]));
 	}
-}), Pu = { class: "tw:dui-modal-box tw:bg-base-200" }, Fu = { class: "tw:m-0 tw:font-serif tw:text-xl tw:font-bold" }, Iu = { class: "tw:dui-modal-action" }, Lu = /* @__PURE__ */ L({
+});
+//#endregion
+//#region src/functions/player-sheet/advancement.ts
+function Pu(e, t, n = 0) {
+	if (e.length === 0 || e.some((e) => !Number.isFinite(e) || e < 0)) throw Error("The WFRP advancement cost table is invalid.");
+	let r = Math.max(0, Math.floor(t / 5)), i = e[Math.min(r, e.length - 1)];
+	if (i === void 0) throw Error("The WFRP advancement cost table is incomplete.");
+	return i + n;
+}
+function Fu(e) {
+	return (e + 1) * 100;
+}
+function Iu(e, t, n) {
+	if (![
+		e,
+		t,
+		n
+	].every(Number.isFinite) || e < 0 || t < 0 || n < 0) throw Error("The character experience values are invalid.");
+	let r = e - t;
+	if (r < n) throw Error(`This advance costs ${n} XP, but only ${Math.max(0, r)} is available.`);
+	let i = t + n;
+	return {
+		available: e - i,
+		spent: i,
+		total: e
+	};
+}
+function Lu(e, t, n, r) {
+	let i = Math.max(1, Math.floor(e.level)) * 5, a = new Set(e.characteristicAdvances.map(Ru)), o = t.filter((e) => [
+		e.key,
+		e.abbreviation,
+		e.label
+	].some((e) => a.has(Ru(e)))).map((e) => zu(e, i)), s = new Map(n.map((e) => [Ru(e.name), e])), c = Bu(e.skillNames).map((e) => {
+		let t = s.get(Ru(e)), n = t?.advances ?? 0;
+		return {
+			advancesNeeded: Math.max(0, i - n),
+			complete: n >= i,
+			name: e,
+			...t ? { skill: t } : {}
+		};
+	}), l = new Set(e.talentNames.map(Ru)), u = r.filter((e) => l.has(Ru(e.name))), d = e.talentNames.length === 0 || u.length > 0, f = o.length + c.length + +!!e.talentNames.length;
+	return {
+		advanceTarget: i,
+		characteristics: o,
+		completedRequirements: o.filter((e) => e.complete).length + c.filter((e) => e.complete).length + (e.talentNames.length && d ? 1 : 0),
+		remainingAdvances: [...o, ...c].reduce((e, t) => e + t.advancesNeeded, 0),
+		skills: c,
+		talentComplete: d,
+		talents: u,
+		totalRequirements: f
+	};
+}
+function Ru(e) {
+	return e.trim().toLowerCase();
+}
+function zu(e, t) {
+	return {
+		advancesNeeded: Math.max(0, t - e.advances),
+		characteristic: e,
+		complete: e.advances >= t
+	};
+}
+function Bu(e) {
+	let t = /* @__PURE__ */ new Set();
+	return e.filter((e) => {
+		let n = Ru(e);
+		return !n || t.has(n) ? !1 : (t.add(n), !0);
+	});
+}
+//#endregion
+//#region src/view/apps/player-shell/common/ConfirmAction.vue?vue&type=script&setup=true&lang.ts
+var Vu = { class: "tw:dui-modal-box tw:bg-base-200" }, Hu = { class: "tw:m-0 tw:font-serif tw:text-xl tw:font-bold" }, Uu = { class: "tw:dui-modal-action" }, Wu = /* @__PURE__ */ L({
 	__name: "ConfirmAction",
 	props: {
 		body: {},
@@ -4443,10 +4514,10 @@ var Tu = {
 			ref_key: "dialog",
 			ref: r,
 			class: "tw:dui-modal"
-		}, [U("div", Pu, [
-			U("h3", Fu, E(e.title), 1),
+		}, [U("div", Vu, [
+			U("h3", Hu, E(e.title), 1),
 			U("p", null, E(e.body), 1),
-			U("div", Iu, [n[1] ||= U("form", { method: "dialog" }, [U("button", {
+			U("div", Uu, [n[1] ||= U("form", { method: "dialog" }, [U("button", {
 				type: "submit",
 				class: "tw:dui-btn"
 			}, "Cancel")], -1), U("button", {
@@ -4459,60 +4530,53 @@ var Tu = {
 			class: "tw:dui-modal-backdrop"
 		}, [U("button", { type: "submit" }, "Close")], -1)], 512)], 64));
 	}
-}), Ru = {
+}), Gu = {
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Advancement"
-}, zu = { class: "tw:dui-stats tw:grid tw:grid-cols-3 tw:bg-base-200 tw:shadow-md" }, Bu = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Vu = { class: "tw:dui-stat-value tw:text-xl tw:text-secondary" }, Hu = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Uu = { class: "tw:dui-stat-value tw:text-xl" }, Wu = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Gu = { class: "tw:dui-stat-value tw:text-xl" }, Ku = {
+}, Ku = { class: "tw:dui-stats tw:grid tw:grid-cols-3 tw:bg-base-200 tw:shadow-md" }, qu = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Ju = { class: "tw:dui-stat-value tw:text-xl tw:text-secondary" }, Yu = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Xu = { class: "tw:dui-stat-value tw:text-xl" }, Zu = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Qu = { class: "tw:dui-stat-value tw:text-xl" }, $u = {
 	key: 0,
 	class: "tw:m-0 tw:text-sm"
-}, qu = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, Ju = ["disabled"], Yu = ["disabled"], Xu = {
+}, ed = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, td = ["disabled"], nd = ["disabled"], rd = {
+	key: 0,
+	class: "tw:grid tw:gap-2 tw:rounded-box tw:bg-base-200 tw:p-3"
+}, id = { class: "tw:flex tw:items-center tw:justify-between tw:gap-2 tw:text-sm" }, ad = { class: "tw:dui-badge tw:dui-badge-sm tw:dui-badge-outline" }, od = ["value", "max"], sd = { class: "tw:opacity-70" }, cd = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "advance-characteristics-heading"
-}, Zu = { class: "tw:grid tw:size-11 tw:place-items-center tw:rounded-field tw:bg-base-300 tw:font-serif tw:text-xl tw:text-secondary" }, Qu = { class: "tw:min-w-0" }, $u = { class: "tw:block" }, ed = { class: "tw:opacity-65" }, td = {
+}, ld = { class: "tw:grid tw:size-11 tw:place-items-center tw:rounded-field tw:bg-base-300 tw:font-serif tw:text-xl tw:text-secondary" }, ud = { class: "tw:min-w-0" }, dd = { class: "tw:flex tw:flex-wrap tw:items-center tw:gap-2" }, fd = { class: "tw:block tw:opacity-65" }, pd = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "advance-skills-heading"
-}, nd = { class: "tw:grid tw:size-11 tw:place-items-center tw:rounded-field tw:bg-base-300 tw:font-serif tw:text-xl tw:text-secondary" }, rd = { class: "tw:min-w-0" }, id = { class: "tw:block tw:[overflow-wrap:anywhere]" }, ad = { class: "tw:opacity-65" }, od = {
-	key: 0,
+}, md = { class: "tw:grid tw:size-11 tw:place-items-center tw:rounded-field tw:bg-base-300 tw:font-serif tw:text-xl tw:text-secondary" }, hd = { class: "tw:min-w-0" }, gd = { class: "tw:flex tw:flex-wrap tw:items-center tw:gap-2" }, _d = { class: "tw:[overflow-wrap:anywhere]" }, vd = { class: "tw:block tw:opacity-65" }, yd = ["disabled", "onClick"], bd = {
+	key: 1,
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "advance-talents-heading"
-}, sd = { class: "tw:min-w-0" }, cd = { class: "tw:block tw:[overflow-wrap:anywhere]" }, ld = { class: "tw:opacity-65" }, ud = /* @__PURE__ */ L({
+}, xd = { class: "tw:min-w-0" }, Sd = { class: "tw:block tw:[overflow-wrap:anywhere]" }, Cd = { class: "tw:opacity-65" }, wd = /* @__PURE__ */ L({
 	__name: "AdvancementSection",
 	props: {
 		actions: {},
 		character: {}
 	},
 	setup(e) {
-		let t = e, { actionMessage: n, actionTone: r, isBusy: i, runPlayerAction: a } = wu(), o = J(() => {
-			let e = new Set(t.character.career.characteristicAdvances.map((e) => e.toLowerCase())), n = t.character.characteristics.filter((t) => [
-				t.key,
-				t.abbreviation.toLowerCase(),
-				t.label.toLowerCase()
-			].some((t) => e.has(t)));
-			return n.length ? n : t.character.characteristics;
-		}), s = J(() => {
-			let e = new Set(t.character.career.skillNames.map((e) => e.toLowerCase())), n = t.character.skills.filter((t) => e.has(t.name.toLowerCase()));
-			return n.length ? n : t.character.skills.filter((e) => e.advances > 0);
-		}), c = J(() => {
-			let e = new Set(t.character.career.talentNames.map((e) => e.toLowerCase()));
-			return t.character.talents.filter((t) => e.has(t.name.toLowerCase()));
-		});
-		function l(e) {
+		let t = e, { actionMessage: n, actionTone: r, isBusy: i, runPlayerAction: a } = wu(), o = J(() => Lu(t.character.career, t.character.characteristics, t.character.skills, t.character.talents));
+		function s(e) {
 			a(() => t.actions.advanceCharacteristic(e.key), `${e.label} advanced for ${e.nextAdvanceCost} XP.`);
 		}
-		function u(e) {
+		function c(e) {
 			a(() => t.actions.advanceSkill(e.id), `${e.name} advanced for ${e.nextAdvanceCost} XP.`);
 		}
-		function d(e) {
+		function l(e) {
+			a(() => t.actions.addCareerSkill(e), `${e} added to the character sheet.`);
+		}
+		function u(e) {
 			a(() => t.actions.advanceTalent(e.id), `${e.name} advanced for ${e.nextAdvanceCost} XP.`);
 		}
-		function f() {
+		function d() {
 			let e = !t.character.career.complete;
 			a(() => t.actions.setCareerComplete(t.character.career.id, e), e ? "Career marked complete." : "Career marked incomplete.");
 		}
-		function p() {
+		function f() {
 			a(t.actions.openCareerSelector, "Career selector opened.");
 		}
-		return (t, a) => (B(), V("section", Ru, [
+		return (t, a) => (B(), V("section", Gu, [
 			W(Cu, {
 				eyebrow: "Spend experience",
 				title: "Advancement"
@@ -4521,10 +4585,10 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("div", zu, [
-				U("div", Bu, [a[0] ||= U("div", { class: "tw:dui-stat-title" }, "Available", -1), U("div", Vu, E(e.character.experience.available), 1)]),
-				U("div", Hu, [a[1] ||= U("div", { class: "tw:dui-stat-title" }, "Spent", -1), U("div", Uu, E(e.character.experience.spent), 1)]),
-				U("div", Wu, [a[2] ||= U("div", { class: "tw:dui-stat-title" }, "Total", -1), U("div", Gu, E(e.character.experience.total), 1)])
+			U("div", Ku, [
+				U("div", qu, [a[0] ||= U("div", { class: "tw:dui-stat-title" }, "Available", -1), U("div", Ju, E(e.character.experience.available), 1)]),
+				U("div", Yu, [a[1] ||= U("div", { class: "tw:dui-stat-title" }, "Spent", -1), U("div", Xu, E(e.character.experience.spent), 1)]),
+				U("div", Zu, [a[2] ||= U("div", { class: "tw:dui-stat-title" }, "Total", -1), U("div", Qu, E(e.character.experience.total), 1)])
 			]),
 			W(vu, {
 				"description-html": e.character.career.descriptionHtml,
@@ -4536,89 +4600,106 @@ var Tu = {
 					"aria-hidden": "true"
 				}, null, -1)]]),
 				badge: F(() => [U("span", { class: T(["tw:dui-badge tw:dui-badge-sm", e.character.career.complete ? "tw:dui-badge-success" : "tw:dui-badge-warning"]) }, E(e.character.career.complete ? "Complete" : "In progress"), 3)]),
-				default: F(() => [e.character.career.talentNames.length ? (B(), V("p", Ku, [a[4] ||= U("strong", null, "Career talents:", -1), G(" " + E(e.character.career.talentNames.join(", ")), 1)])) : K("", !0), U("div", qu, [U("button", {
+				default: F(() => [e.character.career.talentNames.length ? (B(), V("p", $u, [a[4] ||= U("strong", null, "Career talents:", -1), G(" " + E(e.character.career.talentNames.join(", ")), 1)])) : K("", !0), U("div", ed, [U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:min-h-11",
 					disabled: N(i) || !e.character.career.id,
-					onClick: f
+					onClick: d
 				}, [a[5] ||= U("i", {
 					class: "fa-solid fa-check-double",
 					"aria-hidden": "true"
-				}, null, -1), G(" Mark " + E(e.character.career.complete ? "incomplete" : "complete"), 1)], 8, Ju), U("button", {
+				}, null, -1), G(" Mark " + E(e.character.career.complete ? "incomplete" : "complete"), 1)], 8, td), U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:dui-btn-secondary tw:min-h-11",
 					disabled: N(i),
-					onClick: p
+					onClick: f
 				}, [...a[6] ||= [U("i", {
 					class: "fa-solid fa-route",
 					"aria-hidden": "true"
-				}, null, -1), G(" Change career ", -1)]], 8, Yu)])]),
+				}, null, -1), G(" Change career ", -1)]], 8, nd)])]),
 				_: 1
 			}, 8, [
 				"description-html",
 				"subtitle",
 				"title"
 			]),
-			U("section", Xu, [a[7] ||= U("h3", {
+			o.value.totalRequirements ? (B(), V("div", rd, [
+				U("div", id, [a[7] ||= U("strong", null, "Career completion", -1), U("span", ad, E(o.value.completedRequirements) + "/" + E(o.value.totalRequirements) + " ready ", 1)]),
+				U("progress", {
+					class: "tw:dui-progress",
+					value: o.value.completedRequirements,
+					max: o.value.totalRequirements,
+					"aria-label": "Career completion requirements"
+				}, null, 8, od),
+				U("small", sd, [G(E(o.value.remainingAdvances) + " characteristic and skill advances remain. ", 1), e.character.career.talentNames.length ? (B(), V(z, { key: 0 }, [G(E(o.value.talentComplete ? "Career talent owned." : "Choose 1 career talent."), 1)], 64)) : K("", !0)])
+			])) : K("", !0),
+			U("section", cd, [a[8] ||= U("h3", {
 				id: "advance-characteristics-heading",
 				class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
-			}, " Career characteristics ", -1), (B(!0), V(z, null, R(o.value, (e) => (B(), V("article", {
-				key: e.key,
+			}, " Career characteristics ", -1), (B(!0), V(z, null, R(o.value.characteristics, (e) => (B(), V("article", {
+				key: e.characteristic.key,
 				class: "tw:grid tw:grid-cols-[auto_minmax(0,1fr)_auto] tw:items-center tw:gap-3 tw:rounded-box tw:bg-base-200 tw:p-3"
 			}, [
-				U("strong", Zu, E(e.value), 1),
-				U("span", Qu, [U("strong", $u, E(e.label), 1), U("small", ed, E(e.advances) + " advances · " + E(e.nextAdvanceCost) + " XP next", 1)]),
-				W(Lu, {
-					body: `Spend ${e.nextAdvanceCost} XP to advance ${e.label}?`,
+				U("strong", ld, E(e.characteristic.value), 1),
+				U("span", ud, [U("span", dd, [U("strong", null, E(e.characteristic.label), 1), U("span", { class: T(["tw:dui-badge tw:dui-badge-sm", e.complete ? "tw:dui-badge-success" : "tw:dui-badge-warning"]) }, E(e.complete ? "Complete" : `${e.advancesNeeded} needed`), 3)]), U("small", fd, E(e.characteristic.advances) + "/" + E(o.value.advanceTarget) + " career advances · " + E(e.characteristic.nextAdvanceCost) + " XP next", 1)]),
+				W(Wu, {
+					body: `Spend ${e.characteristic.nextAdvanceCost} XP to advance ${e.characteristic.label}?`,
 					danger: !1,
 					"confirm-label": "Spend XP",
 					icon: "fa-solid fa-arrow-up",
-					title: `Advance ${e.label}?`,
+					title: `Advance ${e.characteristic.label}?`,
 					"trigger-label": "Advance",
-					onConfirm: (t) => l(e)
+					onConfirm: (t) => s(e.characteristic)
 				}, null, 8, [
 					"body",
 					"title",
 					"onConfirm"
 				])
 			]))), 128))]),
-			U("section", td, [a[8] ||= U("h3", {
+			U("section", pd, [a[9] ||= U("h3", {
 				id: "advance-skills-heading",
 				class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
-			}, " Career skills ", -1), (B(!0), V(z, null, R(s.value, (e) => (B(), V("article", {
-				key: e.id,
-				class: "tw:grid tw:grid-cols-[auto_minmax(0,1fr)_auto] tw:items-center tw:gap-3 tw:rounded-box tw:bg-base-200 tw:p-3"
+			}, " Career skills ", -1), (B(!0), V(z, null, R(o.value.skills, (e) => (B(), V("article", {
+				key: e.name,
+				class: T(["tw:grid tw:grid-cols-[auto_minmax(0,1fr)_auto] tw:items-center tw:gap-3 tw:rounded-box tw:bg-base-200 tw:p-3", { "tw:opacity-65": !e.skill }])
 			}, [
-				U("strong", nd, E(e.total), 1),
-				U("span", rd, [U("strong", id, E(e.name), 1), U("small", ad, E(e.advances) + " advances · " + E(e.nextAdvanceCost) + " XP next", 1)]),
-				W(Lu, {
-					body: `Spend ${e.nextAdvanceCost} XP to advance ${e.name}?`,
+				U("strong", md, E(e.skill?.total ?? "—"), 1),
+				U("span", hd, [U("span", gd, [U("strong", _d, E(e.name), 1), U("span", { class: T(["tw:dui-badge tw:dui-badge-sm", e.complete ? "tw:dui-badge-success" : "tw:dui-badge-warning"]) }, E(e.complete ? "Complete" : `${e.advancesNeeded} needed`), 3)]), U("small", vd, [e.skill ? (B(), V(z, { key: 0 }, [G(E(e.skill.advances) + "/" + E(o.value.advanceTarget) + " career advances · " + E(e.skill.nextAdvanceCost) + " XP next ", 1)], 64)) : (B(), V(z, { key: 1 }, [G("Not on character sheet")], 64))])]),
+				e.skill ? (B(), H(Wu, {
+					key: 0,
+					body: `Spend ${e.skill.nextAdvanceCost} XP to advance ${e.skill.name}?`,
 					danger: !1,
 					"confirm-label": "Spend XP",
 					icon: "fa-solid fa-arrow-up",
-					title: `Advance ${e.name}?`,
+					title: `Advance ${e.skill.name}?`,
 					"trigger-label": "Advance",
-					onConfirm: (t) => u(e)
+					onConfirm: (t) => c(e.skill)
 				}, null, 8, [
 					"body",
 					"title",
 					"onConfirm"
-				])
-			]))), 128))]),
-			c.value.length ? (B(), V("section", od, [a[9] ||= U("h3", {
+				])) : (B(), V("button", {
+					key: 1,
+					type: "button",
+					class: "tw:dui-btn tw:dui-btn-sm tw:min-h-11",
+					disabled: N(i),
+					onClick: (t) => l(e.name)
+				}, " Add to sheet ", 8, yd))
+			], 2))), 128))]),
+			o.value.talents.length ? (B(), V("section", bd, [a[10] ||= U("h3", {
 				id: "advance-talents-heading",
 				class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
-			}, " Owned career talents ", -1), (B(!0), V(z, null, R(c.value, (e) => (B(), V("article", {
+			}, " Owned career talents ", -1), (B(!0), V(z, null, R(o.value.talents, (e) => (B(), V("article", {
 				key: e.id,
 				class: "tw:grid tw:grid-cols-[minmax(0,1fr)_auto] tw:items-center tw:gap-3 tw:rounded-box tw:bg-base-200 tw:p-3"
-			}, [U("span", sd, [U("strong", cd, E(e.name), 1), U("small", ld, "Rank " + E(e.ranks) + " · " + E(e.nextAdvanceCost) + " XP next", 1)]), W(Lu, {
+			}, [U("span", xd, [U("strong", Sd, E(e.name), 1), U("small", Cd, "Rank " + E(e.ranks) + " · " + E(e.nextAdvanceCost) + " XP next", 1)]), W(Wu, {
 				body: `Spend ${e.nextAdvanceCost} XP to buy another rank of ${e.name}?`,
 				danger: !1,
 				"confirm-label": "Spend XP",
 				icon: "fa-solid fa-arrow-up",
 				title: `Advance ${e.name}?`,
 				"trigger-label": "Advance",
-				onConfirm: (t) => d(e)
+				onConfirm: (t) => u(e)
 			}, null, 8, [
 				"body",
 				"title",
@@ -4626,17 +4707,17 @@ var Tu = {
 			])]))), 128))])) : K("", !0)
 		]));
 	}
-}), dd = {
+}), Td = {
 	class: "tw:flex tw:h-full tw:min-h-0 tw:flex-col",
 	"aria-label": "Chat and results"
-}, fd = { class: "tw:grid tw:gap-2 tw:border-b tw:border-base-300 tw:bg-base-100 tw:p-3" }, pd = { class: "tw:dui-chat-header tw:flex tw:gap-2 tw:text-xs" }, md = ["datetime"], hd = {
+}, Ed = { class: "tw:grid tw:gap-2 tw:border-b tw:border-base-300 tw:bg-base-100 tw:p-3" }, Dd = { class: "tw:dui-chat-header tw:flex tw:gap-2 tw:text-xs" }, Od = ["datetime"], kd = {
 	key: 0,
 	class: "tw:mt-0 tw:mb-2 tw:text-xs tw:font-bold tw:text-secondary"
-}, gd = ["innerHTML"], _d = {
+}, Ad = ["innerHTML"], jd = {
 	key: 0,
 	class: "tw:dui-alert tw:items-start",
 	role: "status"
-}, vd = /* @__PURE__ */ L({
+}, Md = /* @__PURE__ */ L({
 	__name: "ChatSection",
 	props: { activity: {} },
 	setup(e) {
@@ -4650,7 +4731,7 @@ var Tu = {
 				minute: "2-digit"
 			}).format(e) : "";
 		}
-		return (r, i) => (B(), V("section", dd, [U("header", fd, [W(Cu, {
+		return (r, i) => (B(), V("section", Td, [U("header", Ed, [W(Cu, {
 			count: e.activity.length,
 			eyebrow: "Live from the table",
 			title: "Chat & Results"
@@ -4665,50 +4746,50 @@ var Tu = {
 		}, [(B(!0), V(z, null, R(e.activity, (e) => (B(), V("article", {
 			key: e.id,
 			class: T(["tw:dui-chat", e.isOwn ? "tw:dui-chat-end" : "tw:dui-chat-start"])
-		}, [U("div", pd, [U("strong", null, E(e.author), 1), e.timestamp ? (B(), V("time", {
+		}, [U("div", Dd, [U("strong", null, E(e.author), 1), e.timestamp ? (B(), V("time", {
 			key: 0,
 			datetime: new Date(e.timestamp).toISOString()
-		}, E(n(e.timestamp)), 9, md)) : K("", !0)]), U("div", { class: T(["tw:dui-chat-bubble tw:max-w-[92%] tw:bg-base-200 tw:text-base-content tw:shadow-md", { "tw:border tw:border-secondary/50": e.isOwn }]) }, [e.flavor ? (B(), V("p", hd, E(e.flavor), 1)) : K("", !0), U("div", {
+		}, E(n(e.timestamp)), 9, Od)) : K("", !0)]), U("div", { class: T(["tw:dui-chat-bubble tw:max-w-[92%] tw:bg-base-200 tw:text-base-content tw:shadow-md", { "tw:border tw:border-secondary/50": e.isOwn }]) }, [e.flavor ? (B(), V("p", kd, E(e.flavor), 1)) : K("", !0), U("div", {
 			class: "player-chat-content",
 			innerHTML: e.contentHtml
-		}, null, 8, gd)], 2)], 2))), 128)), e.activity.length === 0 ? (B(), V("div", _d, [...i[1] ||= [U("i", {
+		}, null, 8, Ad)], 2)], 2))), 128)), e.activity.length === 0 ? (B(), V("div", jd, [...i[1] ||= [U("i", {
 			class: "fa-solid fa-comments tw:mt-1",
 			"aria-hidden": "true"
 		}, null, -1), U("span", null, "No visible chat messages yet. Tests and rolls will appear here.", -1)]])) : K("", !0)], 512)]));
 	}
-}), yd = {
+}), Nd = {
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Combat"
-}, bd = {
+}, Pd = {
 	class: "tw:grid tw:grid-cols-2 tw:gap-2",
 	"aria-label": "Combat state"
-}, xd = { class: "tw:rounded-box tw:bg-base-200 tw:p-3 tw:shadow-md" }, Sd = { class: "tw:block tw:font-serif tw:text-xl tw:tabular-nums" }, Cd = { class: "tw:dui-join tw:mt-2 tw:w-full" }, wd = ["disabled"], Td = ["disabled"], Ed = { class: "tw:rounded-box tw:bg-base-200 tw:p-3 tw:shadow-md" }, Dd = { class: "tw:block tw:font-serif tw:text-xl tw:tabular-nums" }, Od = { class: "tw:dui-join tw:mt-2 tw:w-full" }, kd = ["disabled"], Ad = ["disabled"], jd = {
+}, Fd = { class: "tw:rounded-box tw:bg-base-200 tw:p-3 tw:shadow-md" }, Id = { class: "tw:block tw:font-serif tw:text-xl tw:tabular-nums" }, Ld = { class: "tw:dui-join tw:mt-2 tw:w-full" }, Rd = ["disabled"], zd = ["disabled"], Bd = { class: "tw:rounded-box tw:bg-base-200 tw:p-3 tw:shadow-md" }, Vd = { class: "tw:block tw:font-serif tw:text-xl tw:tabular-nums" }, Hd = { class: "tw:dui-join tw:mt-2 tw:w-full" }, Ud = ["disabled"], Wd = ["disabled"], Gd = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "weapons-heading"
-}, Md = { class: "tw:flex tw:items-center tw:justify-between" }, Nd = { class: "tw:dui-badge tw:dui-badge-sm" }, Pd = {
+}, Kd = { class: "tw:flex tw:items-center tw:justify-between" }, qd = { class: "tw:dui-badge tw:dui-badge-sm" }, Jd = {
 	key: 0,
 	class: "tw:dui-badge tw:dui-badge-secondary tw:dui-badge-sm",
 	title: "Equipped",
 	"aria-label": "Equipped"
-}, Fd = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2 tw:text-sm" }, Id = { key: 0 }, Ld = { class: "tw:m-0 tw:font-bold" }, Rd = { key: 1 }, zd = { class: "tw:m-0 tw:font-bold" }, Bd = { key: 2 }, Vd = { class: "tw:m-0" }, Hd = { key: 3 }, Ud = { class: "tw:m-0" }, Wd = {
+}, Yd = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2 tw:text-sm" }, Xd = { key: 0 }, Zd = { class: "tw:m-0 tw:font-bold" }, Qd = { key: 1 }, $d = { class: "tw:m-0 tw:font-bold" }, ef = { key: 2 }, tf = { class: "tw:m-0" }, nf = { key: 3 }, rf = { class: "tw:m-0" }, af = {
 	key: 0,
 	class: "tw:m-0 tw:text-sm"
-}, Gd = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, Kd = ["disabled", "onClick"], qd = ["disabled", "onClick"], Jd = {
+}, of = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, sf = ["disabled", "onClick"], cf = ["disabled", "onClick"], lf = {
 	key: 0,
 	class: "tw:m-0 tw:text-sm tw:opacity-65"
-}, Yd = {
+}, uf = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "armour-heading"
-}, Xd = { class: "tw:grid tw:grid-cols-3 tw:gap-2" }, Zd = { class: "tw:block tw:opacity-65" }, Qd = { class: "tw:font-serif tw:text-xl tw:text-secondary" }, $d = {
+}, df = { class: "tw:grid tw:grid-cols-3 tw:gap-2" }, ff = { class: "tw:block tw:opacity-65" }, pf = { class: "tw:font-serif tw:text-xl tw:text-secondary" }, mf = {
 	key: 0,
 	class: "tw:dui-badge tw:dui-badge-secondary tw:dui-badge-sm"
-}, ef = {
+}, hf = {
 	key: 0,
 	class: "tw:m-0 tw:text-sm"
-}, tf = {
+}, gf = {
 	key: 1,
 	class: "tw:m-0 tw:text-sm"
-}, nf = /* @__PURE__ */ L({
+}, _f = /* @__PURE__ */ L({
 	__name: "CombatSection",
 	props: {
 		actions: {},
@@ -4725,7 +4806,7 @@ var Tu = {
 		function l(e) {
 			a(() => t.actions.reloadWeapon(e.id), `${e.name} reload updated.`);
 		}
-		return (t, a) => (B(), V("section", yd, [
+		return (t, a) => (B(), V("section", Nd, [
 			W(Cu, {
 				eyebrow: "At the ready",
 				title: "Combat"
@@ -4734,36 +4815,36 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("section", bd, [U("article", xd, [
+			U("section", Pd, [U("article", Fd, [
 				a[4] ||= U("span", { class: "tw:text-xs tw:font-bold tw:opacity-65" }, "Wounds", -1),
-				U("strong", Sd, E(e.character.wounds.current) + " / " + E(e.character.wounds.maximum), 1),
-				U("div", Cd, [U("button", {
+				U("strong", Id, E(e.character.wounds.current) + " / " + E(e.character.wounds.maximum), 1),
+				U("div", Ld, [U("button", {
 					class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11 tw:flex-1",
 					disabled: N(i),
 					onClick: a[0] ||= (e) => s("wounds", -1)
-				}, " − ", 8, wd), U("button", {
+				}, " − ", 8, Rd), U("button", {
 					class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11 tw:flex-1",
 					disabled: N(i),
 					onClick: a[1] ||= (e) => s("wounds", 1)
-				}, " + ", 8, Td)])
-			]), U("article", Ed, [
+				}, " + ", 8, zd)])
+			]), U("article", Bd, [
 				a[5] ||= U("span", { class: "tw:text-xs tw:font-bold tw:opacity-65" }, "Advantage", -1),
-				U("strong", Dd, E(o.value?.current ?? 0), 1),
-				U("div", Od, [U("button", {
+				U("strong", Vd, E(o.value?.current ?? 0), 1),
+				U("div", Hd, [U("button", {
 					class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11 tw:flex-1",
 					disabled: N(i),
 					onClick: a[2] ||= (e) => s("advantage", -1)
-				}, " − ", 8, kd), U("button", {
+				}, " − ", 8, Ud), U("button", {
 					class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11 tw:flex-1",
 					disabled: N(i),
 					onClick: a[3] ||= (e) => s("advantage", 1)
-				}, " + ", 8, Ad)])
+				}, " + ", 8, Wd)])
 			])]),
-			U("section", jd, [
-				U("div", Md, [a[6] ||= U("h3", {
+			U("section", Gd, [
+				U("div", Kd, [a[6] ||= U("h3", {
 					id: "weapons-heading",
 					class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
-				}, "Weapons", -1), U("span", Nd, E(e.character.combat.weapons.length), 1)]),
+				}, "Weapons", -1), U("span", qd, E(e.character.combat.weapons.length), 1)]),
 				(B(!0), V(z, null, R(e.character.combat.weapons, (e) => (B(), H(vu, {
 					key: e.id,
 					"description-html": e.descriptionHtml,
@@ -4775,19 +4856,19 @@ var Tu = {
 					].filter(Boolean).join(" · "),
 					title: e.name
 				}, {
-					badge: F(() => [e.equipped ? (B(), V("span", Pd, [...a[7] ||= [U("i", {
+					badge: F(() => [e.equipped ? (B(), V("span", Jd, [...a[7] ||= [U("i", {
 						class: "fa-solid fa-check",
 						"aria-hidden": "true"
 					}, null, -1)]])) : K("", !0)]),
 					default: F(() => [
-						U("dl", Fd, [
-							e.ammunitionName ? (B(), V("div", Id, [a[8] ||= U("dt", { class: "tw:opacity-60" }, "Ammunition", -1), U("dd", Ld, E(e.ammunitionName), 1)])) : K("", !0),
-							e.range ? (B(), V("div", Rd, [a[9] ||= U("dt", { class: "tw:opacity-60" }, "Loaded", -1), U("dd", zd, E(e.loaded ? "Yes" : "No"), 1)])) : K("", !0),
-							e.qualities.length ? (B(), V("div", Bd, [a[10] ||= U("dt", { class: "tw:opacity-60" }, "Qualities", -1), U("dd", Vd, E(e.qualities.join(", ")), 1)])) : K("", !0),
-							e.flaws.length ? (B(), V("div", Hd, [a[11] ||= U("dt", { class: "tw:opacity-60" }, "Flaws", -1), U("dd", Ud, E(e.flaws.join(", ")), 1)])) : K("", !0)
+						U("dl", Yd, [
+							e.ammunitionName ? (B(), V("div", Xd, [a[8] ||= U("dt", { class: "tw:opacity-60" }, "Ammunition", -1), U("dd", Zd, E(e.ammunitionName), 1)])) : K("", !0),
+							e.range ? (B(), V("div", Qd, [a[9] ||= U("dt", { class: "tw:opacity-60" }, "Loaded", -1), U("dd", $d, E(e.loaded ? "Yes" : "No"), 1)])) : K("", !0),
+							e.qualities.length ? (B(), V("div", ef, [a[10] ||= U("dt", { class: "tw:opacity-60" }, "Qualities", -1), U("dd", tf, E(e.qualities.join(", ")), 1)])) : K("", !0),
+							e.flaws.length ? (B(), V("div", nf, [a[11] ||= U("dt", { class: "tw:opacity-60" }, "Flaws", -1), U("dd", rf, E(e.flaws.join(", ")), 1)])) : K("", !0)
 						]),
-						e.special ? (B(), V("p", Wd, [a[12] ||= U("strong", null, "Special:", -1), G(" " + E(e.special), 1)])) : K("", !0),
-						U("div", Gd, [U("button", {
+						e.special ? (B(), V("p", af, [a[12] ||= U("strong", null, "Special:", -1), G(" " + E(e.special), 1)])) : K("", !0),
+						U("div", of, [U("button", {
 							type: "button",
 							class: "tw:dui-btn tw:dui-btn-primary tw:min-h-11",
 							disabled: N(i),
@@ -4795,7 +4876,7 @@ var Tu = {
 						}, [...a[13] ||= [U("i", {
 							class: "fa-solid fa-dice-d20",
 							"aria-hidden": "true"
-						}, null, -1), G(" Set up attack ", -1)]], 8, Kd), e.range ? (B(), V("button", {
+						}, null, -1), G(" Set up attack ", -1)]], 8, sf), e.range ? (B(), V("button", {
 							key: 0,
 							type: "button",
 							class: "tw:dui-btn tw:min-h-11",
@@ -4804,7 +4885,7 @@ var Tu = {
 						}, [...a[14] ||= [U("i", {
 							class: "fa-solid fa-rotate",
 							"aria-hidden": "true"
-						}, null, -1), G(" Reload ", -1)]], 8, qd)) : K("", !0)])
+						}, null, -1), G(" Reload ", -1)]], 8, cf)) : K("", !0)])
 					]),
 					_: 2
 				}, 1032, [
@@ -4813,17 +4894,17 @@ var Tu = {
 					"subtitle",
 					"title"
 				]))), 128)),
-				e.character.combat.weapons.length === 0 ? (B(), V("p", Jd, " No weapons recorded. ")) : K("", !0)
+				e.character.combat.weapons.length === 0 ? (B(), V("p", lf, " No weapons recorded. ")) : K("", !0)
 			]),
-			U("section", Yd, [
+			U("section", uf, [
 				a[17] ||= U("h3", {
 					id: "armour-heading",
 					class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
 				}, " Armour by location ", -1),
-				U("div", Xd, [(B(!0), V(z, null, R(e.character.combat.armourByLocation, (e) => (B(), V("div", {
+				U("div", df, [(B(!0), V(z, null, R(e.character.combat.armourByLocation, (e) => (B(), V("div", {
 					key: e.key,
 					class: "tw:rounded-field tw:bg-base-300 tw:p-2 tw:text-center"
-				}, [U("small", Zd, E(e.label), 1), U("strong", Qd, E(e.armourPoints), 1)]))), 128))]),
+				}, [U("small", ff, E(e.label), 1), U("strong", pf, E(e.armourPoints), 1)]))), 128))]),
 				(B(!0), V(z, null, R(e.character.combat.armour, (e) => (B(), H(vu, {
 					key: e.id,
 					"description-html": e.descriptionHtml,
@@ -4831,8 +4912,8 @@ var Tu = {
 					subtitle: e.locations.map((e) => `${e.label} ${e.armourPoints}`).join(" · "),
 					title: e.name
 				}, {
-					badge: F(() => [e.worn ? (B(), V("span", $d, "Worn")) : K("", !0)]),
-					default: F(() => [e.qualities.length ? (B(), V("p", ef, [a[15] ||= U("strong", null, "Qualities:", -1), G(" " + E(e.qualities.join(", ")), 1)])) : K("", !0), e.flaws.length ? (B(), V("p", tf, [a[16] ||= U("strong", null, "Flaws:", -1), G(" " + E(e.flaws.join(", ")), 1)])) : K("", !0)]),
+					badge: F(() => [e.worn ? (B(), V("span", mf, "Worn")) : K("", !0)]),
+					default: F(() => [e.qualities.length ? (B(), V("p", hf, [a[15] ||= U("strong", null, "Qualities:", -1), G(" " + E(e.qualities.join(", ")), 1)])) : K("", !0), e.flaws.length ? (B(), V("p", gf, [a[16] ||= U("strong", null, "Flaws:", -1), G(" " + E(e.flaws.join(", ")), 1)])) : K("", !0)]),
 					_: 2
 				}, 1032, [
 					"description-html",
@@ -4843,40 +4924,40 @@ var Tu = {
 			])
 		]));
 	}
-}), rf = {
+}), vf = {
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Effects and health"
-}, af = {
+}, yf = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "conditions-heading"
-}, of = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, sf = { class: "tw:min-w-0" }, cf = { class: "tw:block tw:[overflow-wrap:anywhere]" }, lf = { class: "tw:opacity-65" }, uf = { class: "tw:dui-join" }, df = [
+}, bf = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, xf = { class: "tw:min-w-0" }, Sf = { class: "tw:block tw:[overflow-wrap:anywhere]" }, Cf = { class: "tw:opacity-65" }, wf = { class: "tw:dui-join" }, Tf = [
 	"disabled",
 	"aria-label",
 	"onClick"
-], ff = [
+], Ef = [
 	"disabled",
 	"aria-label",
 	"onClick"
-], pf = {
+], Df = {
 	key: 0,
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "extended-heading"
-}, mf = { class: "tw:dui-badge tw:dui-badge-secondary tw:dui-badge-sm" }, hf = ["value", "max"], gf = ["disabled", "onClick"], _f = {
+}, Of = { class: "tw:dui-badge tw:dui-badge-secondary tw:dui-badge-sm" }, kf = ["value", "max"], Af = ["disabled", "onClick"], jf = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "ailments-heading"
-}, vf = {
+}, Mf = {
 	key: 0,
 	class: "tw:m-0 tw:text-sm tw:opacity-65"
-}, yf = {
+}, Nf = {
 	class: "tw:grid tw:gap-2",
 	"aria-labelledby": "active-effects-heading"
-}, bf = {
+}, Pf = {
 	key: 0,
 	class: "tw:dui-badge tw:dui-badge-ghost tw:dui-badge-sm"
-}, xf = {
+}, Ff = {
 	key: 0,
 	class: "tw:m-0 tw:text-sm tw:opacity-65"
-}, Sf = /* @__PURE__ */ L({
+}, If = /* @__PURE__ */ L({
 	__name: "EffectsSection",
 	props: {
 		actions: {},
@@ -4894,7 +4975,7 @@ var Tu = {
 			let t = e.details.map((e) => `${e.label}: ${e.value}`).join(" · ");
 			return t ? `${e.type} · ${t}` : e.type;
 		}
-		return (t, a) => (B(), V("section", rf, [
+		return (t, a) => (B(), V("section", vf, [
 			W(Cu, {
 				eyebrow: "What ails you",
 				title: "Effects & Health"
@@ -4903,26 +4984,26 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("section", af, [a[0] ||= U("div", { class: "tw:flex tw:items-center tw:justify-between" }, [U("h3", {
+			U("section", yf, [a[0] ||= U("div", { class: "tw:flex tw:items-center tw:justify-between" }, [U("h3", {
 				id: "conditions-heading",
 				class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
-			}, " Conditions "), U("span", { class: "tw:dui-badge tw:dui-badge-sm" }, "Immediate controls")], -1), U("div", of, [(B(!0), V(z, null, R(e.effects.conditions, (e) => (B(), V("article", {
+			}, " Conditions "), U("span", { class: "tw:dui-badge tw:dui-badge-sm" }, "Immediate controls")], -1), U("div", bf, [(B(!0), V(z, null, R(e.effects.conditions, (e) => (B(), V("article", {
 				key: e.id,
 				class: T(["tw:grid tw:grid-cols-[minmax(0,1fr)_auto] tw:items-center tw:gap-2 tw:rounded-box tw:border tw:border-base-300 tw:bg-base-200 tw:p-3", { "tw:border-secondary/60": e.value > 0 }])
-			}, [U("div", sf, [U("strong", cf, E(e.name), 1), U("small", lf, "Current " + E(e.value), 1)]), U("div", uf, [U("button", {
+			}, [U("div", xf, [U("strong", Sf, E(e.name), 1), U("small", Cf, "Current " + E(e.value), 1)]), U("div", wf, [U("button", {
 				type: "button",
 				class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11",
 				disabled: N(i) || e.value <= 0,
 				"aria-label": `Remove one ${e.name}`,
 				onClick: (t) => o(e, -1)
-			}, " − ", 8, df), U("button", {
+			}, " − ", 8, Tf), U("button", {
 				type: "button",
 				class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11",
 				disabled: N(i),
 				"aria-label": `Add one ${e.name}`,
 				onClick: (t) => o(e, 1)
-			}, " + ", 8, ff)])], 2))), 128))])]),
-			e.effects.extendedTests.length ? (B(), V("section", pf, [a[2] ||= U("h3", {
+			}, " + ", 8, Ef)])], 2))), 128))])]),
+			e.effects.extendedTests.length ? (B(), V("section", Df, [a[2] ||= U("h3", {
 				id: "extended-heading",
 				class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
 			}, " Extended tests ", -1), (B(!0), V(z, null, R(e.effects.extendedTests, (e) => (B(), H(vu, {
@@ -4932,12 +5013,12 @@ var Tu = {
 				subtitle: `${e.test} · ${e.difficulty || "Challenging"}`,
 				title: e.name
 			}, {
-				badge: F(() => [U("span", mf, E(e.currentSL) + " / " + E(e.targetSL) + " SL", 1)]),
+				badge: F(() => [U("span", Of, E(e.currentSL) + " / " + E(e.targetSL) + " SL", 1)]),
 				default: F(() => [U("progress", {
 					class: "tw:dui-progress tw:dui-progress-secondary",
 					value: e.currentSL,
 					max: Math.max(1, e.targetSL)
-				}, null, 8, hf), U("button", {
+				}, null, 8, kf), U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:dui-btn-primary tw:min-h-11 tw:w-full",
 					disabled: N(i),
@@ -4945,7 +5026,7 @@ var Tu = {
 				}, [...a[1] ||= [U("i", {
 					class: "fa-solid fa-dice-d20",
 					"aria-hidden": "true"
-				}, null, -1), G(" Continue test ", -1)]], 8, gf)]),
+				}, null, -1), G(" Continue test ", -1)]], 8, Af)]),
 				_: 2
 			}, 1032, [
 				"description-html",
@@ -4953,7 +5034,7 @@ var Tu = {
 				"subtitle",
 				"title"
 			]))), 128))])) : K("", !0),
-			U("section", _f, [
+			U("section", jf, [
 				a[3] ||= U("h3", {
 					id: "ailments-heading",
 					class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
@@ -4970,9 +5051,9 @@ var Tu = {
 					"subtitle",
 					"title"
 				]))), 128)),
-				e.effects.ailments.length === 0 ? (B(), V("p", vf, " No injuries, diseases, mutations, critical wounds, or psychology entries. ")) : K("", !0)
+				e.effects.ailments.length === 0 ? (B(), V("p", Mf, " No injuries, diseases, mutations, critical wounds, or psychology entries. ")) : K("", !0)
 			]),
-			U("section", yf, [
+			U("section", Nf, [
 				a[4] ||= U("h3", {
 					id: "active-effects-heading",
 					class: "tw:m-0 tw:font-serif tw:text-lg tw:font-bold"
@@ -4984,7 +5065,7 @@ var Tu = {
 					subtitle: e.source,
 					title: e.name
 				}, {
-					badge: F(() => [e.disabled ? (B(), V("span", bf, "Disabled")) : K("", !0)]),
+					badge: F(() => [e.disabled ? (B(), V("span", Pf, "Disabled")) : K("", !0)]),
 					_: 2
 				}, 1032, [
 					"description-html",
@@ -4992,23 +5073,23 @@ var Tu = {
 					"subtitle",
 					"title"
 				]))), 128)),
-				e.effects.active.length === 0 ? (B(), V("p", xf, " No additional active effects. ")) : K("", !0)
+				e.effects.active.length === 0 ? (B(), V("p", Ff, " No additional active effects. ")) : K("", !0)
 			])
 		]));
 	}
-}), Cf = {
+}), Lf = {
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Inventory item"
-}, wf = {
+}, Rf = {
 	class: "tw:dui-breadcrumbs tw:text-sm",
 	"aria-label": "Inventory location"
-}, Tf = { class: "tw:dui-card tw:dui-card-border tw:overflow-hidden tw:bg-base-200 tw:shadow-lg" }, Ef = { class: "tw:relative tw:h-40 tw:bg-base-300" }, Df = ["src", "alt"], Of = {
+}, zf = { class: "tw:dui-card tw:dui-card-border tw:overflow-hidden tw:bg-base-200 tw:shadow-lg" }, Bf = { class: "tw:relative tw:h-40 tw:bg-base-300" }, Vf = ["src", "alt"], Hf = {
 	key: 1,
 	class: "tw:grid tw:h-full tw:place-items-center tw:text-4xl tw:text-secondary"
-}, kf = {
+}, Uf = {
 	key: 2,
 	class: "tw:dui-badge tw:dui-badge-secondary tw:absolute tw:top-3 tw:right-3"
-}, Af = { class: "tw:dui-card-body tw:gap-4 tw:p-4" }, jf = { class: "tw:m-0 tw:text-xs tw:font-black tw:text-secondary tw:uppercase" }, Mf = { class: "tw:dui-card-title tw:font-serif tw:text-2xl" }, Nf = { class: "tw:grid tw:grid-cols-2 tw:rounded-box tw:bg-base-300" }, Pf = { class: "tw:p-3" }, Ff = { class: "tw:m-0 tw:font-serif tw:text-2xl tw:font-bold" }, If = { class: "tw:p-3" }, Lf = { class: "tw:m-0 tw:font-serif tw:text-2xl tw:font-bold" }, Rf = { class: "tw:flex tw:gap-2" }, zf = ["disabled"], Bf = ["disabled"], Vf = { class: "tw:flex tw:gap-2" }, Hf = ["disabled"], Uf = ["value"], Wf = ["disabled"], Gf = ["disabled"], Kf = /* @__PURE__ */ L({
+}, Wf = { class: "tw:dui-card-body tw:gap-4 tw:p-4" }, Gf = { class: "tw:m-0 tw:text-xs tw:font-black tw:text-secondary tw:uppercase" }, Kf = { class: "tw:dui-card-title tw:font-serif tw:text-2xl" }, qf = { class: "tw:grid tw:grid-cols-2 tw:rounded-box tw:bg-base-300" }, Jf = { class: "tw:p-3" }, Yf = { class: "tw:m-0 tw:font-serif tw:text-2xl tw:font-bold" }, Xf = { class: "tw:p-3" }, Zf = { class: "tw:m-0 tw:font-serif tw:text-2xl tw:font-bold" }, Qf = { class: "tw:flex tw:gap-2" }, $f = ["disabled"], ep = ["disabled"], tp = { class: "tw:flex tw:gap-2" }, np = ["disabled"], rp = ["value"], ip = ["disabled"], ap = ["disabled"], op = /* @__PURE__ */ L({
 	__name: "InventoryItemDetail",
 	props: {
 		actions: {},
@@ -5039,8 +5120,8 @@ var Tu = {
 				a.value === "success" && r("back");
 			});
 		}
-		return (t, n) => (B(), V("article", Cf, [
-			U("nav", wf, [U("ul", null, [U("li", null, [U("button", {
+		return (t, n) => (B(), V("article", Lf, [
+			U("nav", Rf, [U("ul", null, [U("li", null, [U("button", {
 				type: "button",
 				class: "tw:font-bold tw:text-secondary",
 				onClick: n[0] ||= (e) => r("back")
@@ -5049,19 +5130,19 @@ var Tu = {
 				message: N(i),
 				tone: N(a)
 			}, null, 8, ["message", "tone"]),
-			U("section", Tf, [U("figure", Ef, [e.item.imageUrl ? (B(), V("img", {
+			U("section", zf, [U("figure", Bf, [e.item.imageUrl ? (B(), V("img", {
 				key: 0,
 				src: e.item.imageUrl,
 				alt: `${e.item.name} illustration`,
 				width: "400",
 				height: "240",
 				class: "tw:h-full tw:w-full tw:object-cover"
-			}, null, 8, Df)) : (B(), V("div", Of, [...n[3] ||= [U("i", {
+			}, null, 8, Vf)) : (B(), V("div", Hf, [...n[3] ||= [U("i", {
 				class: "fa-solid fa-sack-xmark",
 				"aria-hidden": "true"
-			}, null, -1)]])), e.item.equipped ? (B(), V("span", kf, "Equipped")) : K("", !0)]), U("div", Af, [
-				U("div", null, [U("p", jf, E(e.item.category), 1), U("h2", Mf, E(e.item.name), 1)]),
-				U("dl", Nf, [U("div", Pf, [n[4] ||= U("dt", { class: "tw:text-xs tw:opacity-65" }, "Encumbrance", -1), U("dd", Ff, E(e.item.encumbrance), 1)]), U("div", If, [n[5] ||= U("dt", { class: "tw:text-xs tw:opacity-65" }, "Quantity", -1), U("dd", Lf, E(e.item.quantity), 1)])]),
+			}, null, -1)]])), e.item.equipped ? (B(), V("span", Uf, "Equipped")) : K("", !0)]), U("div", Wf, [
+				U("div", null, [U("p", Gf, E(e.item.category), 1), U("h2", Kf, E(e.item.name), 1)]),
+				U("dl", qf, [U("div", Jf, [n[4] ||= U("dt", { class: "tw:text-xs tw:opacity-65" }, "Encumbrance", -1), U("dd", Yf, E(e.item.encumbrance), 1)]), U("div", Xf, [n[5] ||= U("dt", { class: "tw:text-xs tw:opacity-65" }, "Quantity", -1), U("dd", Zf, E(e.item.quantity), 1)])]),
 				W(vu, {
 					"description-html": e.item.descriptionHtml,
 					title: "Full description"
@@ -5078,7 +5159,7 @@ var Tu = {
 				}, [n[7] ||= U("label", {
 					for: "inventory-item-quantity",
 					class: "tw:text-sm tw:font-bold"
-				}, "Quantity", -1), U("div", Rf, [I(U("input", {
+				}, "Quantity", -1), U("div", Qf, [I(U("input", {
 					id: "inventory-item-quantity",
 					"onUpdate:modelValue": n[1] ||= (e) => c.value = e,
 					type: "number",
@@ -5087,7 +5168,7 @@ var Tu = {
 					inputmode: "numeric",
 					class: "tw:dui-input tw:min-h-11 tw:min-w-0 tw:flex-1",
 					disabled: N(o)
-				}, null, 8, zf), [[
+				}, null, 8, $f), [[
 					vo,
 					c.value,
 					void 0,
@@ -5096,14 +5177,14 @@ var Tu = {
 					type: "submit",
 					class: "tw:dui-btn tw:dui-btn-primary tw:min-h-11",
 					disabled: N(o) || !u.value
-				}, " Apply ", 8, Bf)])], 32),
+				}, " Apply ", 8, ep)])], 32),
 				U("form", {
 					class: "tw:grid tw:gap-2",
 					onSubmit: Do(p, ["prevent"])
 				}, [n[9] ||= U("label", {
 					for: "inventory-container",
 					class: "tw:text-sm tw:font-bold"
-				}, "Stored in", -1), U("div", Vf, [I(U("select", {
+				}, "Stored in", -1), U("div", tp, [I(U("select", {
 					id: "inventory-container",
 					"onUpdate:modelValue": n[2] ||= (e) => l.value = e,
 					class: "tw:dui-select tw:min-h-11 tw:min-w-0 tw:flex-1",
@@ -5111,11 +5192,11 @@ var Tu = {
 				}, [n[8] ||= U("option", { value: "" }, "Carried gear", -1), (B(!0), V(z, null, R(e.containers.filter((t) => t.id !== e.item.id), (e) => (B(), V("option", {
 					key: e.id,
 					value: e.id
-				}, E(e.name), 9, Uf))), 128))], 8, Hf), [[xo, l.value]]), U("button", {
+				}, E(e.name), 9, rp))), 128))], 8, np), [[xo, l.value]]), U("button", {
 					type: "submit",
 					class: "tw:dui-btn tw:min-h-11",
 					disabled: N(o) || l.value === e.item.containerId
-				}, " Move ", 8, Wf)])], 32),
+				}, " Move ", 8, ip)])], 32),
 				e.item.canEquip ? (B(), V("button", {
 					key: 0,
 					type: "button",
@@ -5125,8 +5206,8 @@ var Tu = {
 				}, [U("i", {
 					class: T(e.item.equipped ? "fa-solid fa-box-archive" : "fa-solid fa-hand-fist"),
 					"aria-hidden": "true"
-				}, null, 2), G(" " + E(e.item.equipped ? "Unequip" : "Equip"), 1)], 10, Gf)) : K("", !0),
-				W(Lu, {
+				}, null, 2), G(" " + E(e.item.equipped ? "Unequip" : "Equip"), 1)], 10, ap)) : K("", !0),
+				W(Wu, {
 					body: `Delete ${e.item.name} from this character? This cannot be undone.`,
 					"confirm-label": "Delete item",
 					title: "Delete item?",
@@ -5136,22 +5217,22 @@ var Tu = {
 			])])
 		]));
 	}
-}), qf = {
+}), sp = {
 	key: 1,
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Inventory"
-}, Jf = { class: "tw:rounded-box tw:border tw:border-secondary/35 tw:bg-base-200 tw:p-3 tw:shadow-inner" }, Yf = { class: "tw:flex tw:items-baseline tw:justify-between tw:gap-3" }, Xf = { class: "tw:font-serif tw:text-lg tw:tabular-nums" }, Zf = ["value"], Qf = { class: "tw:dui-collapse tw:dui-collapse-arrow tw:rounded-box tw:border tw:border-base-300 tw:bg-base-200" }, $f = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, ep = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, tp = ["disabled"], np = { class: "tw:grid tw:gap-4" }, rp = { class: "tw:mb-2 tw:flex tw:items-center tw:justify-between tw:px-1" }, ip = { class: "tw:m-0 tw:font-serif tw:text-base tw:font-bold" }, ap = { class: "tw:text-xs tw:font-bold tw:opacity-55" }, op = { class: "tw:dui-list tw:m-0 tw:overflow-hidden tw:rounded-box tw:border tw:border-base-300 tw:bg-base-200 tw:p-0 tw:[list-style:none]" }, sp = ["onClick"], cp = { class: "tw:grid tw:size-11 tw:place-items-center tw:overflow-hidden tw:rounded-field tw:bg-base-300 tw:text-secondary" }, lp = ["src"], up = {
+}, cp = { class: "tw:rounded-box tw:border tw:border-secondary/35 tw:bg-base-200 tw:p-3 tw:shadow-inner" }, lp = { class: "tw:flex tw:items-baseline tw:justify-between tw:gap-3" }, up = { class: "tw:font-serif tw:text-lg tw:tabular-nums" }, dp = ["value"], fp = { class: "tw:dui-collapse tw:dui-collapse-arrow tw:rounded-box tw:border tw:border-base-300 tw:bg-base-200" }, pp = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, mp = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, hp = ["disabled"], gp = { class: "tw:grid tw:gap-4" }, _p = { class: "tw:mb-2 tw:flex tw:items-center tw:justify-between tw:px-1" }, vp = { class: "tw:m-0 tw:font-serif tw:text-base tw:font-bold" }, yp = { class: "tw:text-xs tw:font-bold tw:opacity-55" }, bp = { class: "tw:dui-list tw:m-0 tw:overflow-hidden tw:rounded-box tw:border tw:border-base-300 tw:bg-base-200 tw:p-0 tw:[list-style:none]" }, xp = ["onClick"], Sp = { class: "tw:grid tw:size-11 tw:place-items-center tw:overflow-hidden tw:rounded-field tw:bg-base-300 tw:text-secondary" }, Cp = ["src"], wp = {
 	key: 1,
 	class: "fa-solid fa-sack-xmark",
 	"aria-hidden": "true"
-}, dp = { class: "tw:min-w-0" }, fp = { class: "tw:block tw:[overflow-wrap:anywhere]" }, pp = { class: "tw:flex tw:flex-wrap tw:gap-x-2 tw:opacity-65" }, mp = {
+}, Tp = { class: "tw:min-w-0" }, Ep = { class: "tw:block tw:[overflow-wrap:anywhere]" }, Dp = { class: "tw:flex tw:flex-wrap tw:gap-x-2 tw:opacity-65" }, Op = {
 	key: 0,
 	class: "tw:font-bold tw:text-secondary"
-}, hp = { class: "tw:grid tw:justify-items-end tw:gap-1" }, gp = { class: "tw:dui-badge tw:dui-badge-sm tw:tabular-nums" }, _p = {
+}, kp = { class: "tw:grid tw:justify-items-end tw:gap-1" }, Ap = { class: "tw:dui-badge tw:dui-badge-sm tw:tabular-nums" }, jp = {
 	key: 0,
 	class: "tw:dui-alert",
 	role: "status"
-}, vp = /* @__PURE__ */ L({
+}, Mp = /* @__PURE__ */ L({
 	__name: "InventorySection",
 	props: {
 		actions: {},
@@ -5195,7 +5276,7 @@ var Tu = {
 				i.value === "success" && (s.value = "");
 			});
 		}
-		return (t, o) => d.value ? (B(), H(Kf, {
+		return (t, o) => d.value ? (B(), H(op, {
 			key: 0,
 			actions: e.actions,
 			containers: f.value,
@@ -5206,7 +5287,7 @@ var Tu = {
 			"containers",
 			"item",
 			"onBack"
-		])) : (B(), V("section", qf, [
+		])) : (B(), V("section", sp, [
 			W(Cu, {
 				count: e.inventory.items.length,
 				eyebrow: "Pack and purse",
@@ -5216,22 +5297,22 @@ var Tu = {
 				message: N(r),
 				tone: N(i)
 			}, null, 8, ["message", "tone"]),
-			U("section", Jf, [U("div", Yf, [o[2] ||= U("h3", { class: "tw:m-0 tw:text-sm tw:font-bold" }, "Encumbrance", -1), U("strong", Xf, E(e.inventory.currentEncumbrance) + " / " + E(e.inventory.maximumEncumbrance), 1)]), U("progress", {
+			U("section", cp, [U("div", lp, [o[2] ||= U("h3", { class: "tw:m-0 tw:text-sm tw:font-bold" }, "Encumbrance", -1), U("strong", up, E(e.inventory.currentEncumbrance) + " / " + E(e.inventory.maximumEncumbrance), 1)]), U("progress", {
 				class: T(["tw:dui-progress tw:mt-2", { "tw:dui-progress-warning": e.inventory.currentEncumbrance >= e.inventory.maximumEncumbrance }]),
 				value: p.value,
 				max: "100",
 				"aria-label": "Current encumbrance"
-			}, null, 10, Zf)]),
-			U("details", Qf, [o[7] ||= U("summary", { class: "tw:dui-collapse-title tw:font-bold" }, "Create a simple item", -1), U("form", {
+			}, null, 10, dp)]),
+			U("details", fp, [o[7] ||= U("summary", { class: "tw:dui-collapse-title tw:font-bold" }, "Create a simple item", -1), U("form", {
 				class: "tw:dui-collapse-content tw:grid tw:gap-3",
 				onSubmit: Do(m, ["prevent"])
 			}, [
-				U("label", $f, [o[3] ||= G(" Name ", -1), I(U("input", {
+				U("label", pp, [o[3] ||= G(" Name ", -1), I(U("input", {
 					"onUpdate:modelValue": o[0] ||= (e) => s.value = e,
 					class: "tw:dui-input tw:min-h-11 tw:w-full",
 					required: ""
 				}, null, 512), [[vo, s.value]])]),
-				U("label", ep, [o[5] ||= G(" Type ", -1), I(U("select", {
+				U("label", mp, [o[5] ||= G(" Type ", -1), I(U("select", {
 					"onUpdate:modelValue": o[1] ||= (e) => c.value = e,
 					class: "tw:dui-select tw:min-h-11 tw:w-full"
 				}, [...o[4] ||= [ea("<option value=\"trapping\">Trapping</option><option value=\"weapon\">Weapon</option><option value=\"armour\">Armour</option><option value=\"ammunition\">Ammunition</option><option value=\"container\">Container</option><option value=\"money\">Money</option>", 6)]], 512), [[xo, c.value]])]),
@@ -5242,9 +5323,9 @@ var Tu = {
 				}, [...o[6] ||= [U("i", {
 					class: "fa-solid fa-plus",
 					"aria-hidden": "true"
-				}, null, -1), G(" Create item ", -1)]], 8, tp)
+				}, null, -1), G(" Create item ", -1)]], 8, hp)
 			], 32)]),
-			U("div", np, [(B(!0), V(z, null, R(u.value, (e) => (B(), V("section", { key: e.id }, [U("div", rp, [U("h3", ip, E(e.label), 1), U("span", ap, E(e.items.length), 1)]), U("ul", op, [(B(!0), V(z, null, R(e.items, (e) => (B(), V("li", {
+			U("div", gp, [(B(!0), V(z, null, R(u.value, (e) => (B(), V("section", { key: e.id }, [U("div", _p, [U("h3", vp, E(e.label), 1), U("span", yp, E(e.items.length), 1)]), U("ul", bp, [(B(!0), V(z, null, R(e.items, (e) => (B(), V("li", {
 				key: e.id,
 				class: "tw:dui-list-row tw:block tw:border-b tw:border-base-300 tw:p-0 last:tw:border-b-0"
 			}, [U("button", {
@@ -5252,59 +5333,59 @@ var Tu = {
 				class: "tw:dui-btn tw:dui-btn-ghost tw:grid tw:h-auto tw:min-h-16 tw:w-full tw:grid-cols-[auto_minmax(0,1fr)_auto] tw:gap-3 tw:rounded-none tw:p-3 tw:text-left tw:text-base-content",
 				onClick: (t) => N(n).selectInventoryItem(e.id)
 			}, [
-				U("span", cp, [e.imageUrl ? (B(), V("img", {
+				U("span", Sp, [e.imageUrl ? (B(), V("img", {
 					key: 0,
 					src: e.imageUrl,
 					alt: "",
 					width: "44",
 					height: "44",
 					class: "tw:h-full tw:w-full tw:object-cover"
-				}, null, 8, lp)) : (B(), V("i", up))]),
-				U("span", dp, [U("strong", fp, E(e.name), 1), U("small", pp, [
+				}, null, 8, Cp)) : (B(), V("i", wp))]),
+				U("span", Tp, [U("strong", Ep, E(e.name), 1), U("small", Dp, [
 					U("span", null, E(e.category), 1),
 					U("span", null, "Enc " + E(e.encumbrance), 1),
-					e.equipped ? (B(), V("span", mp, "Equipped")) : K("", !0)
+					e.equipped ? (B(), V("span", Op, "Equipped")) : K("", !0)
 				])]),
-				U("span", hp, [U("span", gp, "×" + E(e.quantity), 1), o[8] ||= U("i", {
+				U("span", kp, [U("span", Ap, "×" + E(e.quantity), 1), o[8] ||= U("i", {
 					class: "fa-solid fa-chevron-right tw:text-xs tw:opacity-45",
 					"aria-hidden": "true"
 				}, null, -1)])
-			], 8, sp)]))), 128))])]))), 128))]),
-			e.inventory.items.length === 0 ? (B(), V("div", _p, " No carried items yet. ")) : K("", !0)
+			], 8, xp)]))), 128))])]))), 128))]),
+			e.inventory.items.length === 0 ? (B(), V("div", jp, " No carried items yet. ")) : K("", !0)
 		]));
 	}
-}), yp = {
+}), Np = {
 	class: "player-journals tw:flex tw:h-full tw:min-h-0 tw:flex-col",
 	"aria-label": "Journals"
-}, bp = { class: "tw:border-b tw:border-base-300 tw:p-3" }, xp = { class: "tw:flex tw:items-center tw:justify-between" }, Sp = { class: "tw:dui-badge tw:dui-badge-sm" }, Cp = {
+}, Pp = { class: "tw:border-b tw:border-base-300 tw:p-3" }, Fp = { class: "tw:flex tw:items-center tw:justify-between" }, Ip = { class: "tw:dui-badge tw:dui-badge-sm" }, Lp = {
 	key: 0,
 	role: "alert",
 	class: "tw:dui-alert tw:dui-alert-error tw:m-3 tw:text-sm"
-}, wp = { class: "tw:min-h-0 tw:flex-1" }, Tp = /* @__PURE__ */ L({
+}, Rp = { class: "tw:min-h-0 tw:flex-1" }, zp = /* @__PURE__ */ L({
 	__name: "JournalsSection",
 	props: {
 		error: {},
 		journals: {}
 	},
 	setup(e) {
-		return (t, n) => (B(), V("section", yp, [
-			U("header", bp, [
+		return (t, n) => (B(), V("section", Np, [
+			U("header", Pp, [
 				n[1] ||= U("p", { class: "tw:m-0 tw:text-xs tw:font-extrabold tw:text-secondary tw:uppercase" }, " Player handouts ", -1),
-				U("div", xp, [n[0] ||= U("h2", { class: "tw:m-0 tw:font-serif tw:text-2xl tw:font-bold" }, "Journals", -1), U("span", Sp, E(e.journals.length), 1)]),
+				U("div", Fp, [n[0] ||= U("h2", { class: "tw:m-0 tw:font-serif tw:text-2xl tw:font-bold" }, "Journals", -1), U("span", Ip, E(e.journals.length), 1)]),
 				n[2] ||= U("p", { class: "tw:mt-1 tw:mb-0 tw:text-xs tw:opacity-65" }, " Only entries your user can observe are shown. ", -1)
 			]),
-			e.error ? (B(), V("div", Cp, [U("span", null, "Journals could not refresh: " + E(e.error), 1)])) : K("", !0),
-			U("div", wp, [W(hs, { journals: e.journals }, null, 8, ["journals"])])
+			e.error ? (B(), V("div", Lp, [U("span", null, "Journals could not refresh: " + E(e.error), 1)])) : K("", !0),
+			U("div", Rp, [W(hs, { journals: e.journals }, null, 8, ["journals"])])
 		]));
 	}
-}), Ep = {
+}), Bp = {
 	class: "tw:grid tw:gap-3 tw:p-3",
 	"aria-label": "Magic"
-}, Dp = { class: "tw:grid tw:gap-2" }, Op = { class: "tw:dui-badge tw:dui-badge-soft tw:dui-badge-sm" }, kp = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2 tw:text-sm" }, Ap = { key: 0 }, jp = { class: "tw:m-0 tw:font-bold" }, Mp = { key: 1 }, Np = { class: "tw:m-0 tw:font-bold" }, Pp = { key: 2 }, Fp = { class: "tw:m-0 tw:font-bold" }, Ip = { key: 3 }, Lp = { class: "tw:m-0 tw:font-bold" }, Rp = { class: "tw:grid tw:grid-cols-2 tw:gap-2" }, zp = ["disabled", "onClick"], Bp = ["disabled", "onClick"], Vp = {
+}, Vp = { class: "tw:grid tw:gap-2" }, Hp = { class: "tw:dui-badge tw:dui-badge-soft tw:dui-badge-sm" }, Up = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2 tw:text-sm" }, Wp = { key: 0 }, Gp = { class: "tw:m-0 tw:font-bold" }, Kp = { key: 1 }, qp = { class: "tw:m-0 tw:font-bold" }, Jp = { key: 2 }, Yp = { class: "tw:m-0 tw:font-bold" }, Xp = { key: 3 }, Zp = { class: "tw:m-0 tw:font-bold" }, Qp = { class: "tw:grid tw:grid-cols-2 tw:gap-2" }, $p = ["disabled", "onClick"], em = ["disabled", "onClick"], tm = {
 	key: 0,
 	class: "tw:dui-alert tw:items-start",
 	role: "status"
-}, Hp = /* @__PURE__ */ L({
+}, nm = /* @__PURE__ */ L({
 	__name: "MagicSection",
 	props: {
 		actions: {},
@@ -5315,7 +5396,7 @@ var Tu = {
 		function o(e, n) {
 			a(() => t.actions.rollSpell(e.id, n), `${e.name} ${n === "cast" ? "casting" : "channelling"} result sent to chat.`);
 		}
-		return (t, a) => (B(), V("section", Ep, [
+		return (t, a) => (B(), V("section", Bp, [
 			W(Cu, {
 				count: e.spells.length,
 				eyebrow: "The Winds of Magic",
@@ -5325,7 +5406,7 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("div", Dp, [(B(!0), V(z, null, R(e.spells, (e) => (B(), H(vu, {
+			U("div", Vp, [(B(!0), V(z, null, R(e.spells, (e) => (B(), H(vu, {
 				key: e.id,
 				"description-html": e.descriptionHtml,
 				"image-url": e.imageUrl,
@@ -5336,13 +5417,13 @@ var Tu = {
 				].filter(Boolean).join(" · "),
 				title: e.name
 			}, {
-				badge: F(() => [U("span", Op, "SL " + E(e.channellingSL), 1)]),
-				default: F(() => [U("dl", kp, [
-					e.range ? (B(), V("div", Ap, [a[0] ||= U("dt", { class: "tw:opacity-60" }, "Range", -1), U("dd", jp, E(e.range), 1)])) : K("", !0),
-					e.target ? (B(), V("div", Mp, [a[1] ||= U("dt", { class: "tw:opacity-60" }, "Target", -1), U("dd", Np, E(e.target), 1)])) : K("", !0),
-					e.duration ? (B(), V("div", Pp, [a[2] ||= U("dt", { class: "tw:opacity-60" }, "Duration", -1), U("dd", Fp, E(e.duration), 1)])) : K("", !0),
-					e.damage ? (B(), V("div", Ip, [a[3] ||= U("dt", { class: "tw:opacity-60" }, "Damage", -1), U("dd", Lp, E(e.damage), 1)])) : K("", !0)
-				]), U("div", Rp, [U("button", {
+				badge: F(() => [U("span", Hp, "SL " + E(e.channellingSL), 1)]),
+				default: F(() => [U("dl", Up, [
+					e.range ? (B(), V("div", Wp, [a[0] ||= U("dt", { class: "tw:opacity-60" }, "Range", -1), U("dd", Gp, E(e.range), 1)])) : K("", !0),
+					e.target ? (B(), V("div", Kp, [a[1] ||= U("dt", { class: "tw:opacity-60" }, "Target", -1), U("dd", qp, E(e.target), 1)])) : K("", !0),
+					e.duration ? (B(), V("div", Jp, [a[2] ||= U("dt", { class: "tw:opacity-60" }, "Duration", -1), U("dd", Yp, E(e.duration), 1)])) : K("", !0),
+					e.damage ? (B(), V("div", Xp, [a[3] ||= U("dt", { class: "tw:opacity-60" }, "Damage", -1), U("dd", Zp, E(e.damage), 1)])) : K("", !0)
+				]), U("div", Qp, [U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:dui-btn-primary tw:min-h-11",
 					disabled: N(i),
@@ -5350,7 +5431,7 @@ var Tu = {
 				}, [...a[4] ||= [U("i", {
 					class: "fa-solid fa-wand-sparkles",
 					"aria-hidden": "true"
-				}, null, -1), G(" Cast ", -1)]], 8, zp), U("button", {
+				}, null, -1), G(" Cast ", -1)]], 8, $p), U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:min-h-11",
 					disabled: N(i),
@@ -5358,7 +5439,7 @@ var Tu = {
 				}, [...a[5] ||= [U("i", {
 					class: "fa-solid fa-bolt",
 					"aria-hidden": "true"
-				}, null, -1), G(" Channel ", -1)]], 8, Bp)])]),
+				}, null, -1), G(" Channel ", -1)]], 8, em)])]),
 				_: 2
 			}, 1032, [
 				"description-html",
@@ -5366,16 +5447,16 @@ var Tu = {
 				"subtitle",
 				"title"
 			]))), 128))]),
-			e.spells.length === 0 ? (B(), V("div", Vp, [...a[6] ||= [U("i", {
+			e.spells.length === 0 ? (B(), V("div", tm, [...a[6] ||= [U("i", {
 				class: "fa-solid fa-wand-sparkles tw:mt-1",
 				"aria-hidden": "true"
 			}, null, -1), U("span", null, "No spells are recorded on this character.", -1)]])) : K("", !0)
 		]));
 	}
-}), Up = {
+}), rm = {
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Notes and character record"
-}, Wp = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, Gp = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, Kp = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2" }, qp = { class: "tw:text-xs tw:opacity-60" }, Jp = { class: "tw:m-0 tw:font-bold tw:[overflow-wrap:anywhere]" }, Yp = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, Xp = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, Zp = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, Qp = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, $p = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, em = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, tm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, nm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, rm = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, im = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, am = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, om = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, sm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, cm = ["disabled"], lm = /* @__PURE__ */ L({
+}, im = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, am = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, om = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2" }, sm = { class: "tw:text-xs tw:opacity-60" }, cm = { class: "tw:m-0 tw:font-bold tw:[overflow-wrap:anywhere]" }, lm = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, um = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, dm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, fm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, pm = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, mm = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, hm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, gm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, _m = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200" }, vm = { class: "tw:dui-card-body tw:gap-3 tw:p-4" }, ym = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, bm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, xm = { class: "tw:grid tw:gap-1 tw:text-sm tw:font-bold" }, Sm = ["disabled"], Cm = /* @__PURE__ */ L({
 	__name: "NotesSection",
 	props: {
 		actions: {},
@@ -5387,7 +5468,7 @@ var Tu = {
 		function s() {
 			a(() => t.actions.updateNotes({ ...o }), "Character notes saved.");
 		}
-		return (t, a) => (B(), V("section", Up, [
+		return (t, a) => (B(), V("section", rm, [
 			W(Cu, {
 				eyebrow: "Your story",
 				title: "Notes & Record"
@@ -5396,51 +5477,51 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("section", Wp, [U("div", Gp, [a[7] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Personal details", -1), U("dl", Kp, [(B(!0), V(z, null, R(e.character.personalDetails, (e) => (B(), V("div", {
+			U("section", im, [U("div", am, [a[7] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Personal details", -1), U("dl", om, [(B(!0), V(z, null, R(e.character.personalDetails, (e) => (B(), V("div", {
 				key: e.key,
 				class: "tw:rounded-field tw:bg-base-300 tw:p-2"
-			}, [U("dt", qp, E(e.label), 1), U("dd", Jp, E(e.value || "—"), 1)]))), 128))])])]),
+			}, [U("dt", sm, E(e.label), 1), U("dd", cm, E(e.value || "—"), 1)]))), 128))])])]),
 			U("form", {
 				class: "tw:grid tw:gap-4",
 				onSubmit: Do(s, ["prevent"])
 			}, [
-				U("section", Yp, [U("div", Xp, [
+				U("section", lm, [U("div", um, [
 					a[10] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Biography & Motivation", -1),
-					U("label", Zp, [a[8] ||= G(" Motivation ", -1), I(U("input", {
+					U("label", dm, [a[8] ||= G(" Motivation ", -1), I(U("input", {
 						"onUpdate:modelValue": a[0] ||= (e) => o.motivation = e,
 						class: "tw:dui-input tw:min-h-11 tw:w-full"
 					}, null, 512), [[vo, o.motivation]])]),
-					U("label", Qp, [a[9] ||= G(" Biography ", -1), I(U("textarea", {
+					U("label", fm, [a[9] ||= G(" Biography ", -1), I(U("textarea", {
 						"onUpdate:modelValue": a[1] ||= (e) => o.biography = e,
 						rows: "8",
 						class: "tw:dui-textarea tw:w-full"
 					}, null, 512), [[vo, o.biography]])])
 				])]),
-				U("section", $p, [U("div", em, [
+				U("section", pm, [U("div", mm, [
 					a[13] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Personal ambitions", -1),
-					U("label", tm, [a[11] ||= G("Short term", -1), I(U("textarea", {
+					U("label", hm, [a[11] ||= G("Short term", -1), I(U("textarea", {
 						"onUpdate:modelValue": a[2] ||= (e) => o.personalShortTermAmbition = e,
 						rows: "3",
 						class: "tw:dui-textarea tw:w-full"
 					}, null, 512), [[vo, o.personalShortTermAmbition]])]),
-					U("label", nm, [a[12] ||= G("Long term", -1), I(U("textarea", {
+					U("label", gm, [a[12] ||= G("Long term", -1), I(U("textarea", {
 						"onUpdate:modelValue": a[3] ||= (e) => o.personalLongTermAmbition = e,
 						rows: "3",
 						class: "tw:dui-textarea tw:w-full"
 					}, null, 512), [[vo, o.personalLongTermAmbition]])])
 				])]),
-				U("section", rm, [U("div", im, [
+				U("section", _m, [U("div", vm, [
 					a[17] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Party ambitions", -1),
-					U("label", am, [a[14] ||= G("Party name", -1), I(U("input", {
+					U("label", ym, [a[14] ||= G("Party name", -1), I(U("input", {
 						"onUpdate:modelValue": a[4] ||= (e) => o.partyName = e,
 						class: "tw:dui-input tw:min-h-11 tw:w-full"
 					}, null, 512), [[vo, o.partyName]])]),
-					U("label", om, [a[15] ||= G("Short term", -1), I(U("textarea", {
+					U("label", bm, [a[15] ||= G("Short term", -1), I(U("textarea", {
 						"onUpdate:modelValue": a[5] ||= (e) => o.partyShortTermAmbition = e,
 						rows: "3",
 						class: "tw:dui-textarea tw:w-full"
 					}, null, 512), [[vo, o.partyShortTermAmbition]])]),
-					U("label", sm, [a[16] ||= G("Long term", -1), I(U("textarea", {
+					U("label", xm, [a[16] ||= G("Long term", -1), I(U("textarea", {
 						"onUpdate:modelValue": a[6] ||= (e) => o.partyLongTermAmbition = e,
 						rows: "3",
 						class: "tw:dui-textarea tw:w-full"
@@ -5453,22 +5534,22 @@ var Tu = {
 				}, [a[18] ||= U("i", {
 					class: "fa-solid fa-floppy-disk",
 					"aria-hidden": "true"
-				}, null, -1), G(" " + E(N(i) ? "Saving…" : "Save notes"), 1)], 8, cm)
+				}, null, -1), G(" " + E(N(i) ? "Saving…" : "Save notes"), 1)], 8, Sm)
 			], 32)
 		]));
 	}
-}), um = {
+}), wm = {
 	class: "tw:grid tw:gap-3 tw:p-3",
 	"aria-label": "Religion"
-}, dm = {
+}, Tm = {
 	key: 0,
 	class: "tw:dui-alert tw:items-center",
 	role: "status"
-}, fm = { class: "tw:grid tw:gap-2" }, pm = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2 tw:text-sm" }, mm = { key: 0 }, hm = { class: "tw:m-0 tw:font-bold" }, gm = { key: 1 }, _m = { class: "tw:m-0 tw:font-bold" }, vm = { key: 2 }, ym = { class: "tw:m-0 tw:font-bold" }, bm = { key: 3 }, xm = { class: "tw:m-0 tw:font-bold" }, Sm = ["disabled", "onClick"], Cm = {
+}, Em = { class: "tw:grid tw:gap-2" }, Dm = { class: "tw:m-0 tw:grid tw:grid-cols-2 tw:gap-2 tw:text-sm" }, Om = { key: 0 }, km = { class: "tw:m-0 tw:font-bold" }, Am = { key: 1 }, jm = { class: "tw:m-0 tw:font-bold" }, Mm = { key: 2 }, Nm = { class: "tw:m-0 tw:font-bold" }, Pm = { key: 3 }, Fm = { class: "tw:m-0 tw:font-bold" }, Im = ["disabled", "onClick"], Lm = {
 	key: 1,
 	class: "tw:dui-alert tw:items-start",
 	role: "status"
-}, wm = /* @__PURE__ */ L({
+}, Rm = /* @__PURE__ */ L({
 	__name: "ReligionSection",
 	props: {
 		actions: {},
@@ -5480,13 +5561,13 @@ var Tu = {
 		function o(e) {
 			a(() => t.actions.rollPrayer(e.id), `${e.name} result sent to chat.`);
 		}
-		return (t, a) => (B(), V("section", um, [
+		return (t, a) => (B(), V("section", wm, [
 			W(Cu, {
 				count: e.prayers.length,
 				eyebrow: "Faith and favour",
 				title: "Religion"
 			}, null, 8, ["count"]),
-			e.god ? (B(), V("div", dm, [a[1] ||= U("i", {
+			e.god ? (B(), V("div", Tm, [a[1] ||= U("i", {
 				class: "fa-solid fa-place-of-worship",
 				"aria-hidden": "true"
 			}, null, -1), U("span", null, [a[0] ||= U("strong", null, "Deity:", -1), G(" " + E(e.god), 1)])])) : K("", !0),
@@ -5494,18 +5575,18 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("div", fm, [(B(!0), V(z, null, R(e.prayers, (t) => (B(), H(vu, {
+			U("div", Em, [(B(!0), V(z, null, R(e.prayers, (t) => (B(), H(vu, {
 				key: t.id,
 				"description-html": t.descriptionHtml,
 				"image-url": t.imageUrl,
 				subtitle: [t.god || e.god, t.type].filter(Boolean).join(" · "),
 				title: t.name
 			}, {
-				default: F(() => [U("dl", pm, [
-					t.range ? (B(), V("div", mm, [a[2] ||= U("dt", { class: "tw:opacity-60" }, "Range", -1), U("dd", hm, E(t.range), 1)])) : K("", !0),
-					t.target ? (B(), V("div", gm, [a[3] ||= U("dt", { class: "tw:opacity-60" }, "Target", -1), U("dd", _m, E(t.target), 1)])) : K("", !0),
-					t.duration ? (B(), V("div", vm, [a[4] ||= U("dt", { class: "tw:opacity-60" }, "Duration", -1), U("dd", ym, E(t.duration), 1)])) : K("", !0),
-					t.damage ? (B(), V("div", bm, [a[5] ||= U("dt", { class: "tw:opacity-60" }, "Damage", -1), U("dd", xm, E(t.damage), 1)])) : K("", !0)
+				default: F(() => [U("dl", Dm, [
+					t.range ? (B(), V("div", Om, [a[2] ||= U("dt", { class: "tw:opacity-60" }, "Range", -1), U("dd", km, E(t.range), 1)])) : K("", !0),
+					t.target ? (B(), V("div", Am, [a[3] ||= U("dt", { class: "tw:opacity-60" }, "Target", -1), U("dd", jm, E(t.target), 1)])) : K("", !0),
+					t.duration ? (B(), V("div", Mm, [a[4] ||= U("dt", { class: "tw:opacity-60" }, "Duration", -1), U("dd", Nm, E(t.duration), 1)])) : K("", !0),
+					t.damage ? (B(), V("div", Pm, [a[5] ||= U("dt", { class: "tw:opacity-60" }, "Damage", -1), U("dd", Fm, E(t.damage), 1)])) : K("", !0)
 				]), U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:dui-btn-primary tw:min-h-11 tw:w-full",
@@ -5514,7 +5595,7 @@ var Tu = {
 				}, [...a[6] ||= [U("i", {
 					class: "fa-solid fa-hands-praying",
 					"aria-hidden": "true"
-				}, null, -1), G(" Set up prayer test ", -1)]], 8, Sm)]),
+				}, null, -1), G(" Set up prayer test ", -1)]], 8, Im)]),
 				_: 2
 			}, 1032, [
 				"description-html",
@@ -5522,19 +5603,19 @@ var Tu = {
 				"subtitle",
 				"title"
 			]))), 128))]),
-			e.prayers.length === 0 ? (B(), V("div", Cm, [...a[7] ||= [U("i", {
+			e.prayers.length === 0 ? (B(), V("div", Lm, [...a[7] ||= [U("i", {
 				class: "fa-solid fa-hands-praying tw:mt-1",
 				"aria-hidden": "true"
 			}, null, -1), U("span", null, "No prayers or blessings are recorded on this character.", -1)]])) : K("", !0)
 		]));
 	}
-}), Tm = {
+}), zm = {
 	class: "tw:grid tw:gap-3 tw:p-3",
 	"aria-label": "Skills"
-}, Em = { class: "tw:flex tw:min-h-11 tw:items-center tw:justify-between tw:gap-3" }, Dm = { class: "tw:grid tw:gap-2" }, Om = { class: "tw:dui-badge tw:dui-badge-secondary tw:font-bold tw:tabular-nums" }, km = ["disabled", "onClick"], Am = {
+}, Bm = { class: "tw:flex tw:min-h-11 tw:items-center tw:justify-between tw:gap-3" }, Vm = { class: "tw:grid tw:gap-2" }, Hm = { class: "tw:dui-badge tw:dui-badge-secondary tw:font-bold tw:tabular-nums" }, Um = ["disabled", "onClick"], Wm = {
 	key: 0,
 	class: "tw:m-0 tw:p-4 tw:text-center tw:opacity-70"
-}, jm = /* @__PURE__ */ L({
+}, Gm = /* @__PURE__ */ L({
 	__name: "SkillsSection",
 	props: {
 		actions: {},
@@ -5548,7 +5629,7 @@ var Tu = {
 		function c(e) {
 			o(() => t.actions.rollSkill(e.id), `${e.name} test sent to chat.`);
 		}
-		return (e, t) => (B(), V("section", Tm, [
+		return (e, t) => (B(), V("section", zm, [
 			W(Cu, {
 				count: s.value.length,
 				eyebrow: "Tests at a glance",
@@ -5569,18 +5650,18 @@ var Tu = {
 				class: "tw:dui-input tw:min-h-11 tw:w-full",
 				placeholder: "Name or specialization"
 			}, null, 512), [[vo, N(n).skillFilter]]),
-			U("label", Em, [t[2] ||= U("span", { class: "tw:text-sm tw:font-bold" }, "Trained skills only", -1), I(U("input", {
+			U("label", Bm, [t[2] ||= U("span", { class: "tw:text-sm tw:font-bold" }, "Trained skills only", -1), I(U("input", {
 				"onUpdate:modelValue": t[1] ||= (e) => N(n).trainedSkillsOnly = e,
 				type: "checkbox",
 				class: "tw:dui-toggle tw:dui-toggle-secondary"
 			}, null, 512), [[yo, N(n).trainedSkillsOnly]])]),
-			U("div", Dm, [(B(!0), V(z, null, R(s.value, (e) => (B(), H(vu, {
+			U("div", Vm, [(B(!0), V(z, null, R(s.value, (e) => (B(), H(vu, {
 				key: e.id,
 				"description-html": e.descriptionHtml,
 				subtitle: `${e.characteristic} · ${e.advances} advances`,
 				title: e.name
 			}, {
-				badge: F(() => [U("span", Om, E(e.total), 1)]),
+				badge: F(() => [U("span", Hm, E(e.total), 1)]),
 				default: F(() => [U("button", {
 					type: "button",
 					class: "tw:dui-btn tw:dui-btn-primary tw:min-h-11 tw:w-full",
@@ -5589,32 +5670,32 @@ var Tu = {
 				}, [t[3] ||= U("i", {
 					class: "fa-solid fa-dice-d20",
 					"aria-hidden": "true"
-				}, null, -1), G(" Set up " + E(e.name) + " test ", 1)], 8, km)]),
+				}, null, -1), G(" Set up " + E(e.name) + " test ", 1)], 8, Um)]),
 				_: 2
 			}, 1032, [
 				"description-html",
 				"subtitle",
 				"title"
 			]))), 128))]),
-			s.value.length === 0 ? (B(), V("p", Am, " No skills match that filter. ")) : K("", !0)
+			s.value.length === 0 ? (B(), V("p", Wm, " No skills match that filter. ")) : K("", !0)
 		]));
 	}
-}), Mm = {
+}), Km = {
 	class: "tw:grid tw:gap-4 tw:p-3",
 	"aria-label": "Status"
-}, Nm = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200 tw:shadow-md" }, Pm = { class: "tw:dui-card-body tw:gap-2 tw:p-3" }, Fm = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, Im = { class: "tw:min-w-0" }, Lm = { class: "tw:block tw:text-xs tw:font-bold tw:opacity-65" }, Rm = { class: "tw:font-serif tw:text-xl tw:text-secondary tw:tabular-nums" }, zm = { class: "tw:dui-join" }, Bm = [
+}, qm = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200 tw:shadow-md" }, Jm = { class: "tw:dui-card-body tw:gap-2 tw:p-3" }, Ym = { class: "tw:grid tw:gap-2 tw:min-[360px]:grid-cols-2" }, Xm = { class: "tw:min-w-0" }, Zm = { class: "tw:block tw:text-xs tw:font-bold tw:opacity-65" }, Qm = { class: "tw:font-serif tw:text-xl tw:text-secondary tw:tabular-nums" }, $m = { class: "tw:dui-join" }, eh = [
 	"disabled",
 	"aria-label",
 	"onClick"
-], Vm = [
+], th = [
 	"disabled",
 	"aria-label",
 	"onClick"
-], Hm = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200 tw:shadow-md" }, Um = { class: "tw:dui-card-body tw:gap-3 tw:p-3" }, Wm = { class: "tw:grid tw:grid-cols-2 tw:gap-2 tw:min-[360px]:grid-cols-5" }, Gm = [
+], nh = { class: "tw:dui-card tw:dui-card-border tw:bg-base-200 tw:shadow-md" }, rh = { class: "tw:dui-card-body tw:gap-3 tw:p-3" }, ih = { class: "tw:grid tw:grid-cols-2 tw:gap-2 tw:min-[360px]:grid-cols-5" }, ah = [
 	"disabled",
 	"aria-label",
 	"onClick"
-], Km = { class: "tw:text-xs tw:font-black tw:text-secondary" }, qm = { class: "tw:font-serif tw:text-xl tw:tabular-nums" }, Jm = { class: "tw:text-[0.6rem] tw:opacity-65" }, Ym = { class: "tw:dui-stats tw:grid tw:grid-cols-3 tw:bg-base-200 tw:shadow-md" }, Xm = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, Zm = { class: "tw:dui-stat-value tw:text-xl" }, Qm = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, $m = { class: "tw:dui-stat-value tw:text-xl" }, eh = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, th = { class: "tw:dui-stat-value tw:text-xl" }, nh = /* @__PURE__ */ L({
+], oh = { class: "tw:text-xs tw:font-black tw:text-secondary" }, sh = { class: "tw:font-serif tw:text-xl tw:tabular-nums" }, ch = { class: "tw:text-[0.6rem] tw:opacity-65" }, lh = { class: "tw:dui-stats tw:grid tw:grid-cols-3 tw:bg-base-200 tw:shadow-md" }, uh = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, dh = { class: "tw:dui-stat-value tw:text-xl" }, fh = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, ph = { class: "tw:dui-stat-value tw:text-xl" }, mh = { class: "tw:dui-stat tw:min-w-0 tw:p-3" }, hh = { class: "tw:dui-stat-value tw:text-xl" }, gh = /* @__PURE__ */ L({
 	__name: "StatusSection",
 	props: {
 		actions: {},
@@ -5631,7 +5712,7 @@ var Tu = {
 		function l(e, n) {
 			a(() => t.actions.rollCharacteristic(e), `${n} test sent to chat.`);
 		}
-		return (t, a) => (B(), V("section", Mm, [
+		return (t, a) => (B(), V("section", Km, [
 			W(Cu, {
 				eyebrow: "At the table",
 				title: "Status & Controls"
@@ -5641,23 +5722,23 @@ var Tu = {
 				message: N(n),
 				tone: N(r)
 			}, null, 8, ["message", "tone"]),
-			U("section", Nm, [U("div", Pm, [a[0] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "State controls", -1), U("div", Fm, [(B(!0), V(z, null, R(o.value, (e) => (B(), V("article", {
+			U("section", qm, [U("div", Jm, [a[0] ||= U("h3", { class: "tw:dui-card-title tw:font-serif" }, "State controls", -1), U("div", Ym, [(B(!0), V(z, null, R(o.value, (e) => (B(), V("article", {
 				key: e.key,
 				class: "tw:grid tw:grid-cols-[minmax(0,1fr)_auto] tw:items-center tw:gap-2 tw:rounded-box tw:bg-base-300 tw:p-3"
-			}, [U("div", Im, [U("span", Lm, E(e.label), 1), U("strong", Rm, E(s(e)), 1)]), U("div", zm, [U("button", {
+			}, [U("div", Xm, [U("span", Zm, E(e.label), 1), U("strong", Qm, E(s(e)), 1)]), U("div", $m, [U("button", {
 				type: "button",
 				class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11",
 				disabled: N(i) || e.current <= 0,
 				"aria-label": `Decrease ${e.label}`,
 				onClick: (t) => c(e, -1)
-			}, " − ", 8, Bm), U("button", {
+			}, " − ", 8, eh), U("button", {
 				type: "button",
 				class: "tw:dui-btn tw:dui-btn-sm tw:dui-join-item tw:min-h-11",
 				disabled: N(i) || e.maximum !== void 0 && e.current >= e.maximum,
 				"aria-label": `Increase ${e.label}`,
 				onClick: (t) => c(e, 1)
-			}, " + ", 8, Vm)])]))), 128))])])]),
-			U("section", Hm, [U("div", Um, [a[1] ||= U("div", { class: "tw:flex tw:items-center tw:justify-between tw:gap-2" }, [U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Characteristics"), U("span", { class: "tw:dui-badge tw:dui-badge-sm" }, "Tap to test")], -1), U("div", Wm, [(B(!0), V(z, null, R(e.character.characteristics, (e) => (B(), V("button", {
+			}, " + ", 8, th)])]))), 128))])])]),
+			U("section", nh, [U("div", rh, [a[1] ||= U("div", { class: "tw:flex tw:items-center tw:justify-between tw:gap-2" }, [U("h3", { class: "tw:dui-card-title tw:font-serif" }, "Characteristics"), U("span", { class: "tw:dui-badge tw:dui-badge-sm" }, "Tap to test")], -1), U("div", ih, [(B(!0), V(z, null, R(e.character.characteristics, (e) => (B(), V("button", {
 				key: e.key,
 				type: "button",
 				class: "tw:dui-btn tw:dui-btn-ghost tw:grid tw:h-auto tw:min-h-20 tw:min-w-0 tw:place-items-center tw:gap-0 tw:border tw:border-secondary/30 tw:bg-base-300 tw:px-1 tw:py-2 tw:text-base-content",
@@ -5665,18 +5746,18 @@ var Tu = {
 				"aria-label": `Set up ${e.label} test`,
 				onClick: (t) => l(e.key, e.label)
 			}, [
-				U("span", Km, E(e.abbreviation), 1),
-				U("strong", qm, E(e.value), 1),
-				U("small", Jm, "Bonus " + E(e.bonus), 1)
-			], 8, Gm))), 128))])])]),
-			U("div", Ym, [
-				U("div", Xm, [a[2] ||= U("div", { class: "tw:dui-stat-title" }, "Move", -1), U("div", Zm, E(e.character.movement.move), 1)]),
-				U("div", Qm, [a[3] ||= U("div", { class: "tw:dui-stat-title" }, "Walk", -1), U("div", $m, E(e.character.movement.walk), 1)]),
-				U("div", eh, [a[4] ||= U("div", { class: "tw:dui-stat-title" }, "Run", -1), U("div", th, E(e.character.movement.run), 1)])
+				U("span", oh, E(e.abbreviation), 1),
+				U("strong", sh, E(e.value), 1),
+				U("small", ch, "Bonus " + E(e.bonus), 1)
+			], 8, ah))), 128))])])]),
+			U("div", lh, [
+				U("div", uh, [a[2] ||= U("div", { class: "tw:dui-stat-title" }, "Move", -1), U("div", dh, E(e.character.movement.move), 1)]),
+				U("div", fh, [a[3] ||= U("div", { class: "tw:dui-stat-title" }, "Walk", -1), U("div", ph, E(e.character.movement.walk), 1)]),
+				U("div", mh, [a[4] ||= U("div", { class: "tw:dui-stat-title" }, "Run", -1), U("div", hh, E(e.character.movement.run), 1)])
 			])
 		]));
 	}
-}), rh = /* @__PURE__ */ L({
+}), _h = /* @__PURE__ */ L({
 	__name: "PlayerContent",
 	props: {
 		actions: {},
@@ -5687,11 +5768,11 @@ var Tu = {
 	},
 	setup(e) {
 		let t = dl();
-		return (n, r) => (B(), V("div", { class: T(["tw:min-h-0 tw:flex-1 tw:overscroll-contain", ["chat", "journals"].includes(N(t).activeDestination) ? "tw:overflow-hidden" : "tw:overflow-y-auto"]) }, [N(t).activeDestination === "status" ? (B(), H(nh, {
+		return (n, r) => (B(), V("div", { class: T(["tw:min-h-0 tw:flex-1 tw:overscroll-contain", ["chat", "journals"].includes(N(t).activeDestination) ? "tw:overflow-hidden" : "tw:overflow-y-auto"]) }, [N(t).activeDestination === "status" ? (B(), H(gh, {
 			key: 0,
 			actions: e.actions,
 			character: e.character
-		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "skills" ? (B(), H(jm, {
+		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "skills" ? (B(), H(Gm, {
 			key: 1,
 			actions: e.actions,
 			skills: e.character.skills
@@ -5704,19 +5785,19 @@ var Tu = {
 			"actions",
 			"talents",
 			"traits"
-		])) : N(t).activeDestination === "combat" ? (B(), H(nf, {
+		])) : N(t).activeDestination === "combat" ? (B(), H(_f, {
 			key: 3,
 			actions: e.actions,
 			character: e.character
-		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "inventory" ? (B(), H(vp, {
+		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "inventory" ? (B(), H(Mp, {
 			key: 4,
 			actions: e.actions,
 			inventory: e.character.inventory
-		}, null, 8, ["actions", "inventory"])) : N(t).activeDestination === "magic" ? (B(), H(Hp, {
+		}, null, 8, ["actions", "inventory"])) : N(t).activeDestination === "magic" ? (B(), H(nm, {
 			key: 5,
 			actions: e.actions,
 			spells: e.character.magic.spells
-		}, null, 8, ["actions", "spells"])) : N(t).activeDestination === "religion" ? (B(), H(wm, {
+		}, null, 8, ["actions", "spells"])) : N(t).activeDestination === "religion" ? (B(), H(Rm, {
 			key: 6,
 			actions: e.actions,
 			god: e.character.god,
@@ -5725,56 +5806,56 @@ var Tu = {
 			"actions",
 			"god",
 			"prayers"
-		])) : N(t).activeDestination === "effects" ? (B(), H(Sf, {
+		])) : N(t).activeDestination === "effects" ? (B(), H(If, {
 			key: 7,
 			actions: e.actions,
 			effects: e.character.effects
-		}, null, 8, ["actions", "effects"])) : N(t).activeDestination === "notes" ? (B(), H(lm, {
+		}, null, 8, ["actions", "effects"])) : N(t).activeDestination === "notes" ? (B(), H(Cm, {
 			key: 8,
 			actions: e.actions,
 			character: e.character
-		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "advancement" ? (B(), H(ud, {
+		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "advancement" ? (B(), H(wd, {
 			key: 9,
 			actions: e.actions,
 			character: e.character
-		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "chat" ? (B(), H(vd, {
+		}, null, 8, ["actions", "character"])) : N(t).activeDestination === "chat" ? (B(), H(Md, {
 			key: 10,
 			activity: e.activity
-		}, null, 8, ["activity"])) : (B(), H(Tp, {
+		}, null, 8, ["activity"])) : (B(), H(zp, {
 			key: 11,
 			error: e.journalError,
 			journals: e.journals
 		}, null, 8, ["error", "journals"]))], 2));
 	}
-}), ih = { class: "tw:grid tw:flex-1 tw:place-items-start tw:p-4" }, ah = {
+}), vh = { class: "tw:grid tw:flex-1 tw:place-items-start tw:p-4" }, yh = {
 	key: 0,
 	role: "alert",
 	class: "tw:dui-alert tw:dui-alert-warning tw:dui-alert-vertical"
-}, oh = {
+}, bh = {
 	key: 1,
 	role: "alert",
 	class: "tw:dui-alert tw:dui-alert-error tw:dui-alert-vertical"
-}, sh = { class: "tw:grid tw:gap-1" }, ch = { class: "tw:m-0 tw:font-serif tw:text-xl tw:font-bold" }, lh = { class: "tw:m-0" }, uh = /* @__PURE__ */ L({
+}, xh = { class: "tw:grid tw:gap-1" }, Sh = { class: "tw:m-0 tw:font-serif tw:text-xl tw:font-bold" }, Ch = { class: "tw:m-0" }, wh = /* @__PURE__ */ L({
 	__name: "PlayerSheetStateAlert",
 	props: { characterState: {} },
 	setup(e) {
-		return (t, n) => (B(), V("section", ih, [e.characterState.status === "missing" ? (B(), V("div", ah, [...n[0] ||= [U("i", {
+		return (t, n) => (B(), V("section", vh, [e.characterState.status === "missing" ? (B(), V("div", yh, [...n[0] ||= [U("i", {
 			class: "fa-solid fa-user-shield",
 			"aria-hidden": "true"
-		}, null, -1), U("div", { class: "tw:grid tw:gap-1" }, [U("h1", { class: "tw:m-0 tw:font-serif tw:text-xl tw:font-bold" }, "No character assigned"), U("p", { class: "tw:m-0" }, " Ask your GM to assign your character to this Foundry user, then refresh. ")], -1)]])) : e.characterState.status === "unsupported" ? (B(), V("div", oh, [n[2] ||= U("i", {
+		}, null, -1), U("div", { class: "tw:grid tw:gap-1" }, [U("h1", { class: "tw:m-0 tw:font-serif tw:text-xl tw:font-bold" }, "No character assigned"), U("p", { class: "tw:m-0" }, " Ask your GM to assign your character to this Foundry user, then refresh. ")], -1)]])) : e.characterState.status === "unsupported" ? (B(), V("div", bh, [n[2] ||= U("i", {
 			class: "fa-solid fa-triangle-exclamation",
 			"aria-hidden": "true"
-		}, null, -1), U("div", sh, [
-			U("h1", ch, E(e.characterState.actorName), 1),
-			U("p", lh, E(e.characterState.reason), 1),
+		}, null, -1), U("div", xh, [
+			U("h1", Sh, E(e.characterState.actorName), 1),
+			U("p", Ch, E(e.characterState.reason), 1),
 			n[1] ||= U("p", { class: "tw:m-0" }, "Ask your GM to check the assigned character, then refresh.", -1)
 		])])) : K("", !0)]));
 	}
-}), dh = { class: "tw:dui-drawer tw:mx-auto tw:h-full tw:min-h-0 tw:w-full tw:max-w-[430px] tw:overflow-hidden tw:[&_*]:box-border tw:[&_*::after]:box-border tw:[&_*::before]:box-border" }, fh = ["disabled"], ph = { class: "tw:dui-drawer-content tw:min-h-0" }, mh = { class: "tw:flex tw:h-full tw:min-h-0 tw:w-full tw:flex-col tw:overflow-hidden tw:border-x tw:border-base-300 tw:bg-base-100 tw:text-base-content tw:shadow-2xl" }, hh = {
+}), Th = { class: "tw:dui-drawer tw:mx-auto tw:h-full tw:min-h-0 tw:w-full tw:max-w-[430px] tw:overflow-hidden tw:[&_*]:box-border tw:[&_*::after]:box-border tw:[&_*::before]:box-border" }, Eh = ["disabled"], Dh = { class: "tw:dui-drawer-content tw:min-h-0" }, Oh = { class: "tw:flex tw:h-full tw:min-h-0 tw:w-full tw:flex-col tw:overflow-hidden tw:border-x tw:border-base-300 tw:bg-base-100 tw:text-base-content tw:shadow-2xl" }, kh = {
 	key: 0,
 	id: "player-adventure-menu-panel",
 	class: "tw:dui-drawer-side tw:z-50"
-}, gh = /* @__PURE__ */ L({
+}, Ah = /* @__PURE__ */ L({
 	__name: "PlayerShellApp",
 	props: {
 		actions: {},
@@ -5785,7 +5866,7 @@ var Tu = {
 	},
 	setup(e) {
 		let t = e, n = dl(), r = J(() => t.characterState.status === "ready" ? t.characterState.character : void 0);
-		return (t, i) => (B(), V("div", dh, [
+		return (t, i) => (B(), V("div", Th, [
 			I(U("input", {
 				id: "player-adventure-menu",
 				"onUpdate:modelValue": i[0] ||= (e) => N(n).menuOpen = e,
@@ -5793,8 +5874,8 @@ var Tu = {
 				class: "tw:dui-drawer-toggle",
 				disabled: !r.value,
 				"aria-label": "Open adventure menu"
-			}, null, 8, fh), [[yo, N(n).menuOpen]]),
-			U("div", ph, [U("main", mh, [W(Wl, { "character-state": e.characterState }, null, 8, ["character-state"]), e.characterState.status === "ready" ? r.value ? (B(), V(z, { key: 1 }, [W(Nl, { character: r.value }, null, 8, ["character"]), W(rh, {
+			}, null, 8, Eh), [[yo, N(n).menuOpen]]),
+			U("div", Dh, [U("main", Oh, [W(Wl, { "character-state": e.characterState }, null, 8, ["character-state"]), e.characterState.status === "ready" ? r.value ? (B(), V(z, { key: 1 }, [W(Nl, { character: r.value }, null, 8, ["character"]), W(_h, {
 				actions: e.actions,
 				activity: e.activity,
 				character: r.value,
@@ -5806,11 +5887,11 @@ var Tu = {
 				"character",
 				"journal-error",
 				"journals"
-			])], 64)) : K("", !0) : (B(), H(uh, {
+			])], 64)) : K("", !0) : (B(), H(wh, {
 				key: 0,
 				"character-state": e.characterState
 			}, null, 8, ["character-state"]))])]),
-			r.value ? (B(), V("div", hh, [i[1] ||= U("label", {
+			r.value ? (B(), V("div", kh, [i[1] ||= U("label", {
 				for: "player-adventure-menu",
 				class: "tw:dui-drawer-overlay",
 				"aria-label": "Close adventure menu"
@@ -5819,39 +5900,13 @@ var Tu = {
 	}
 });
 //#endregion
-//#region src/functions/player-sheet/advancement.ts
-function _h(e, t, n = 0) {
-	if (e.length === 0 || e.some((e) => !Number.isFinite(e) || e < 0)) throw Error("The WFRP advancement cost table is invalid.");
-	let r = Math.max(0, Math.floor(t / 5)), i = e[Math.min(r, e.length - 1)];
-	if (i === void 0) throw Error("The WFRP advancement cost table is incomplete.");
-	return i + n;
-}
-function vh(e) {
-	return (e + 1) * 100;
-}
-function yh(e, t, n) {
-	if (![
-		e,
-		t,
-		n
-	].every(Number.isFinite) || e < 0 || t < 0 || n < 0) throw Error("The character experience values are invalid.");
-	let r = e - t;
-	if (r < n) throw Error(`This advance costs ${n} XP, but only ${Math.max(0, r)} is available.`);
-	let i = t + n;
-	return {
-		available: e - i,
-		spent: i,
-		total: e
-	};
-}
-//#endregion
 //#region src/functions/player-sheet/sorting.ts
-function bh(e, t) {
+function jh(e, t) {
 	return e.name.localeCompare(t.name);
 }
 //#endregion
 //#region src/functions/player-sheet/inventory.ts
-var xh = [
+var Mh = [
 	"arms-armour",
 	"packs-containers",
 	"provisions",
@@ -5859,7 +5914,7 @@ var xh = [
 	"belongings",
 	"coin"
 ];
-function Sh(e, t = "") {
+function Nh(e, t = "") {
 	return e === "weapon" ? {
 		category: "Weapon",
 		group: "arms-armour"
@@ -5897,8 +5952,8 @@ function Sh(e, t = "") {
 		group: "belongings"
 	};
 }
-function Ch(e, t) {
-	return xh.indexOf(e.group) - xh.indexOf(t.group) || e.name.localeCompare(t.name);
+function Ph(e, t) {
+	return Mh.indexOf(e.group) - Mh.indexOf(t.group) || e.name.localeCompare(t.name);
 }
 //#endregion
 //#region src/module/wfrp4e/value-readers.ts
@@ -5908,13 +5963,17 @@ function X(e) {
 function Z(e) {
 	return typeof e == "string" ? e : "";
 }
-function wh(e) {
+function Fh(e) {
 	return typeof e == "number" && Number.isFinite(e) ? e : void 0;
 }
-function Th(e) {
+function Ih(e) {
 	return e === !0;
 }
-function Eh(e) {
+function Lh(e) {
+	let t = X(e);
+	return t ? Object.entries(t).filter(([, e]) => Ih(e)).map(([e]) => e) : [];
+}
+function Rh(e) {
 	if (typeof e == "number" && Number.isFinite(e)) return e;
 	if (typeof e != "string" || !e.trim()) return;
 	let t = Number(e);
@@ -5923,21 +5982,21 @@ function Eh(e) {
 function Q(e, t, n) {
 	return Z(X(e?.[t])?.[n]);
 }
-function Dh(e, t, n) {
-	return wh(X(e?.[t])?.[n]);
+function zh(e, t, n) {
+	return Fh(X(e?.[t])?.[n]);
 }
-function Oh(e, t, n) {
-	return Eh(X(e?.[t])?.[n]);
+function Bh(e, t, n) {
+	return Rh(X(e?.[t])?.[n]);
 }
-function kh(e, t, n) {
+function Vh(e, t, n) {
 	return X(e?.[t])?.[n] === !0;
 }
-function Ah(e) {
+function Hh(e) {
 	return Q(e, "description", "value");
 }
 //#endregion
 //#region src/module/wfrp4e/player-inventory-adapter.ts
-var jh = new Set([
+var Uh = new Set([
 	"ammunition",
 	"armour",
 	"container",
@@ -5945,36 +6004,36 @@ var jh = new Set([
 	"trapping",
 	"weapon"
 ]);
-function Mh(e, t) {
-	let n = X(e.encumbrance), r = t.map(Fh).filter((e) => e !== void 0).sort(Ch);
+function Wh(e, t) {
+	let n = X(e.encumbrance), r = t.map(qh).filter((e) => e !== void 0).sort(Ph);
 	return {
-		currentEncumbrance: Eh(n?.current) ?? 0,
+		currentEncumbrance: Rh(n?.current) ?? 0,
 		items: r,
-		maximumEncumbrance: Eh(n?.max) ?? 0
+		maximumEncumbrance: Rh(n?.max) ?? 0
 	};
 }
-async function Nh(e, t) {
+async function Gh(e, t) {
 	if (!Number.isInteger(t) || t < 0) throw Error("Quantity must be a whole number of zero or more.");
-	await Lh(e).update({ "system.quantity.value": t });
+	await Yh(e).update({ "system.quantity.value": t });
 }
-async function Ph(e) {
-	let t = Lh(e), n = X(t.system)?.toggleEquip;
+async function Kh(e) {
+	let t = Yh(e), n = X(t.system)?.toggleEquip;
 	if (typeof n != "function") throw Error(`${t.name} cannot be equipped.`);
 	await n.call(t.system);
 }
-function Fh(e) {
+function qh(e) {
 	let t = X(e), n = Z(t?.type);
-	if (!t || !Ih(n)) return;
+	if (!t || !Jh(n)) return;
 	let r = Z(t.id) || Z(t._id), i = Z(t.name), a = X(t.system);
 	if (!r || !i || !a) return;
-	let o = Math.max(0, Math.floor(Oh(a, "quantity", "value") ?? 1)), s = Oh(a, "encumbrance", "value") ?? 0, { category: c, group: l } = Sh(n, Q(a, "trappingType", "value"));
+	let o = Math.max(0, Math.floor(Bh(a, "quantity", "value") ?? 1)), s = Bh(a, "encumbrance", "value") ?? 0, { category: c, group: l } = Nh(n, Q(a, "trappingType", "value"));
 	return {
 		canEquip: typeof a.toggleEquip == "function",
 		category: c,
 		containerId: Q(a, "location", "value"),
-		descriptionHtml: Ah(a),
-		encumbrance: Oh(a, "encumbrance", "total") ?? s * o,
-		equipped: Th(a.equipped) || Th(a.worn) || kh(a, "equipped", "value") || kh(a, "worn", "value"),
+		descriptionHtml: Hh(a),
+		encumbrance: Bh(a, "encumbrance", "total") ?? s * o,
+		equipped: Ih(a.equipped) || Ih(a.worn) || Vh(a, "equipped", "value") || Vh(a, "worn", "value"),
 		group: l,
 		id: r,
 		imageUrl: Z(t.img),
@@ -5983,162 +6042,173 @@ function Fh(e) {
 		type: n
 	};
 }
-function Ih(e) {
-	return jh.has(e);
+function Jh(e) {
+	return Uh.has(e);
 }
-function Lh(e) {
+function Yh(e) {
 	let t = game.user.character;
 	if (!t || t.type !== "character") throw Error("No supported player character is assigned.");
-	let n = Rh(t.items).find((t) => Z(X(t)?.id) === e);
-	if (!zh(n)) throw Error("That inventory item is no longer available.");
+	let n = Xh(t.items).find((t) => Z(X(t)?.id) === e);
+	if (!Zh(n)) throw Error("That inventory item is no longer available.");
 	return n;
 }
-function Rh(e) {
+function Xh(e) {
 	return Array.isArray(e.contents) ? e.contents : [];
 }
-function zh(e) {
+function Zh(e) {
 	let t = X(e);
-	return t !== void 0 && jh.has(Z(t.type)) && typeof t.update == "function";
+	return t !== void 0 && Uh.has(Z(t.type)) && typeof t.update == "function";
 }
 //#endregion
 //#region src/module/wfrp4e/player/data.ts
-function Bh(e) {
-	return (Array.isArray(e.items.contents) ? e.items.contents : []).filter(Kh);
+function Qh(e) {
+	return (Array.isArray(e.items.contents) ? e.items.contents : []).filter(ig);
 }
 function $() {
 	let e = game.user.character;
 	if (!e || e.type !== "character") throw Error("No supported player character is assigned.");
 	return e;
 }
-function Vh(e, t, n) {
-	let r = Bh(e).find((e) => e.id === t);
+function $h(e, t, n) {
+	let r = Qh(e).find((e) => e.id === t);
 	if (!r || n && !n.includes(r.type)) throw Error("That character entry is no longer available.");
 	return r;
 }
-function Hh(e) {
+function eg(e) {
 	return X(X(e)?.system);
 }
-function Uh(e) {
+function tg(e) {
 	let t = X(e);
 	return Z(t?.id) || Z(t?._id);
 }
-function Wh(e) {
+function ng(e) {
 	if (Array.isArray(e)) return e;
 	let t = X(e);
 	return Array.isArray(t?.contents) ? t.contents : [];
 }
-function Gh(e) {
+function rg(e) {
 	return Array.isArray(e) ? e.map((e) => {
 		if (typeof e == "string") return e;
-		let t = X(e), n = Z(t?.display || t?.name || t?.label), r = Eh(t?.value);
+		let t = X(e), n = Z(t?.display || t?.name || t?.label), r = Rh(t?.value);
 		return n && r ? `${n} ${r}` : n;
 	}).filter(Boolean) : [];
 }
-function Kh(e) {
+function ig(e) {
 	let t = X(e);
 	return !!(t && Z(t.id) && Z(t.type) && typeof t.update == "function");
 }
 //#endregion
 //#region src/module/wfrp4e/player/abilities.ts
-function qh(e) {
+function ag(e) {
 	let t = /* @__PURE__ */ new Map();
 	for (let n of e.filter((e) => e.type === "talent")) {
-		let e = Hh(n), r = t.get(n.name), i = Dh(e, "advances", "value") ?? 1;
-		r ? (r.ranks += i, r.nextAdvanceCost = vh(r.ranks)) : t.set(n.name, {
-			descriptionHtml: Ah(e),
+		let e = eg(n), r = t.get(n.name), i = zh(e, "advances", "value") ?? 1;
+		r ? (r.ranks += i, r.nextAdvanceCost = Fu(r.ranks)) : t.set(n.name, {
+			descriptionHtml: Hh(e),
 			id: n.id,
 			name: n.name,
-			nextAdvanceCost: vh(i),
+			nextAdvanceCost: Fu(i),
 			ranks: i,
 			tests: Q(e, "tests", "value")
 		});
 	}
-	return [...t.values()].sort(bh);
+	return [...t.values()].sort(jh);
 }
-function Jh(e) {
+function og(e) {
 	return e.filter((e) => e.type === "trait").map((e) => {
-		let t = Hh(e);
+		let t = eg(e);
 		return {
-			descriptionHtml: Ah(t),
+			descriptionHtml: Hh(t),
 			id: e.id,
 			name: e.name,
-			rollable: kh(t, "rollable", "value"),
+			rollable: Vh(t, "rollable", "value"),
 			specification: Q(t, "specification", "value")
 		};
-	}).sort(bh);
+	}).sort(jh);
 }
-function Yh(e, t) {
+function sg(e, t) {
 	let n = t.find((e) => {
-		let t = Hh(e);
-		return e.type === "career" && (kh(t, "current", "value") || Th(t?.current));
-	}), r = n ? Hh(n) : void 0, i = X(e.career), a = n?.name || Z(i?.name) || Z(i?.value);
+		let t = eg(e);
+		return e.type === "career" && (Vh(t, "current", "value") || Ih(t?.current));
+	}), r = n ? eg(n) : void 0, i = X(e.career), a = n?.name || Z(i?.name) || Z(i?.value), o = lg([...rg(r?.skills), ...rg(r?.addedSkills)]);
 	return {
-		characteristicAdvances: Gh(r?.characteristics),
-		complete: kh(r, "complete", "value") || Th(r?.complete),
-		descriptionHtml: Ah(r),
+		characteristicAdvances: cg(r?.characteristics),
+		complete: Vh(r, "complete", "value") || Ih(r?.complete),
+		descriptionHtml: Hh(r),
 		group: Q(r, "careergroup", "value"),
 		id: n?.id ?? "",
-		level: Oh(r, "level", "value") ?? 0,
+		level: Bh(r, "level", "value") ?? 0,
 		name: a || "No current career",
-		skillNames: Gh(r?.skills),
-		talentNames: Gh(r?.talents)
+		skillNames: o,
+		talentNames: rg(r?.talents)
 	};
+}
+function cg(e) {
+	let t = rg(e);
+	return t.length ? t : Lh(e);
+}
+function lg(e) {
+	let t = /* @__PURE__ */ new Set();
+	return e.filter((e) => {
+		let n = e.trim().toLowerCase();
+		return !n || t.has(n) ? !1 : (t.add(n), !0);
+	});
 }
 //#endregion
 //#region src/module/wfrp4e/player/advancement.ts
-function Xh(e, t, n = 0) {
-	return _h(Zh()[t], e, n);
+function ug(e, t, n = 0) {
+	return Pu(dg()[t], e, n);
 }
-function Zh() {
+function dg() {
 	return {
-		characteristic: Qh("characteristic"),
-		skill: Qh("skill")
+		characteristic: fg("characteristic"),
+		skill: fg("skill")
 	};
 }
-function Qh(e) {
+function fg(e) {
 	let t = game.wfrp4e?.config?.xpCost?.[e];
 	if (!Array.isArray(t) || t.length === 0 || !t.every((e) => typeof e == "number")) throw Error(`The WFRP ${e} advancement costs are unavailable.`);
 	return t;
 }
-async function $h(e) {
+async function pg(e) {
 	let t = $(), n = X(t.system), r = X(X(n?.characteristics)?.[e]);
 	if (!r) throw Error("That characteristic is no longer available.");
-	let i = wh(r.advances) ?? 0, a = Xh(i, "characteristic", wh(r.costModifier) ?? 0), o = ng(n, a), s = {
+	let i = Fh(r.advances) ?? 0, a = ug(i, "characteristic", Fh(r.costModifier) ?? 0), o = gg(n, a), s = {
 		[`system.characteristics.${e}.advances`]: i + 1,
 		"system.details.experience.spent": o
 	};
-	rg(s, t, a, e.toUpperCase(), o), await t.update(s, { skipExperienceChecks: !0 });
+	_g(s, t, a, e.toUpperCase(), o), await t.update(s, { skipExperienceChecks: !0 });
 }
-async function eg(e) {
-	let t = $(), n = Vh(t, e, ["skill"]), r = X(t.system), i = Hh(n), a = Dh(i, "advances", "value") ?? 0, o = Xh(a, "skill", Dh(i, "advances", "costModifier") ?? 0), s = ng(r, o), c = {
+async function mg(e) {
+	let t = $(), n = $h(t, e, ["skill"]), r = X(t.system), i = eg(n), a = zh(i, "advances", "value") ?? 0, o = ug(a, "skill", zh(i, "advances", "costModifier") ?? 0), s = gg(r, o), c = {
 		items: [{
 			_id: n.id,
 			"system.advances.value": a + 1
 		}],
 		"system.details.experience.spent": s
 	};
-	rg(c, t, o, n.name, s), await t.update(c, { skipExperienceChecks: !0 });
+	_g(c, t, o, n.name, s), await t.update(c, { skipExperienceChecks: !0 });
 }
-async function tg(e) {
-	let t = $(), n = Vh(t, e, ["talent"]), r = X(t.system), i = vh(Bh(t).filter((e) => e.type === "talent" && e.name === n.name).reduce((e, t) => e + (Dh(Hh(t), "advances", "value") ?? 1), 0)), a = ng(r, i), o = { "system.details.experience.spent": a };
-	if (rg(o, t, i, n.name, a), !t.createEmbeddedDocuments || !n.toObject) throw Error("Talent advancement is unavailable.");
+async function hg(e) {
+	let t = $(), n = $h(t, e, ["talent"]), r = X(t.system), i = Fu(Qh(t).filter((e) => e.type === "talent" && e.name === n.name).reduce((e, t) => e + (zh(eg(t), "advances", "value") ?? 1), 0)), a = gg(r, i), o = { "system.details.experience.spent": a };
+	if (_g(o, t, i, n.name, a), !t.createEmbeddedDocuments || !n.toObject) throw Error("Talent advancement is unavailable.");
 	await t.update(o, { skipExperienceChecks: !0 });
 	let s = n.toObject();
 	delete s._id, delete s.id, await t.createEmbeddedDocuments("Item", [s]);
 }
-function ng(e, t) {
-	let n = X(X(e?.details)?.experience), r = wh(n?.total), i = wh(n?.spent);
+function gg(e, t) {
+	let n = X(X(e?.details)?.experience), r = Fh(n?.total), i = Fh(n?.spent);
 	if (r === void 0 || i === void 0) throw Error("The character experience values are unavailable.");
-	return yh(r, i, t).spent;
+	return Iu(r, i, t).spent;
 }
-function rg(e, t, n, r, i) {
+function _g(e, t, n, r, i) {
 	let a = X(t.system)?.addToExpLog;
 	if (typeof a != "function") throw Error("The WFRP experience log is unavailable.");
 	e["system.details.experience.log"] = a.call(t.system, n, r, i);
 }
 //#endregion
 //#region src/module/wfrp4e/player/combat.ts
-var ig = [
+var vg = [
 	{
 		key: "head",
 		label: "Head"
@@ -6164,63 +6234,63 @@ var ig = [
 		label: "Right leg"
 	}
 ];
-function ag(e, t) {
+function yg(e, t) {
 	return {
-		armour: t.map(sg).filter((e) => e !== void 0),
-		armourByLocation: cg(e),
-		weapons: t.map((e) => og(e, t)).filter((e) => e !== void 0)
+		armour: t.map(xg).filter((e) => e !== void 0),
+		armourByLocation: Sg(e),
+		weapons: t.map((e) => bg(e, t)).filter((e) => e !== void 0)
 	};
 }
-function og(e, t) {
-	let n = X(e), r = Hh(e);
+function bg(e, t) {
+	let n = X(e), r = eg(e);
 	if (n?.type !== "weapon" || !r) return;
 	let i = Q(r, "currentAmmo", "value") || Z(r.currentAmmo);
 	return {
-		ammunitionName: Z(X(t.find((e) => Uh(e) === i))?.name),
+		ammunitionName: Z(X(t.find((e) => tg(e) === i))?.name),
 		damage: Q(r, "damage", "value"),
-		descriptionHtml: Ah(r),
-		equipped: Th(r.equipped) || kh(r, "equipped", "value"),
-		flaws: Gh(X(r.flaws)?.value),
-		id: Uh(e),
+		descriptionHtml: Hh(r),
+		equipped: Ih(r.equipped) || Vh(r, "equipped", "value"),
+		flaws: rg(X(r.flaws)?.value),
+		id: tg(e),
 		imageUrl: Z(n.img),
-		loaded: Th(X(r.loaded)?.value),
+		loaded: Ih(X(r.loaded)?.value),
 		name: Z(n.name),
-		qualities: Gh(X(r.qualities)?.value),
+		qualities: rg(X(r.qualities)?.value),
 		range: Q(r, "range", "value"),
 		reach: Q(r, "reach", "value"),
 		special: Q(r, "special", "value")
 	};
 }
-function sg(e) {
-	let t = X(e), n = Hh(e);
+function xg(e) {
+	let t = X(e), n = eg(e);
 	if (t?.type !== "armour" || !n) return;
 	let r = X(n.AP);
 	return {
-		descriptionHtml: Ah(n),
-		flaws: Gh(X(n.flaws)?.value),
-		id: Uh(e),
+		descriptionHtml: Hh(n),
+		flaws: rg(X(n.flaws)?.value),
+		id: tg(e),
 		imageUrl: Z(t.img),
-		locations: ig.map(({ key: e, label: t }) => ({
-			armourPoints: Eh(r?.[e]) ?? 0,
+		locations: vg.map(({ key: e, label: t }) => ({
+			armourPoints: Rh(r?.[e]) ?? 0,
 			key: e,
 			label: t
 		})).filter((e) => e.armourPoints > 0),
 		name: Z(t.name),
-		qualities: Gh(X(n.qualities)?.value),
-		worn: Th(n.worn) || kh(n, "worn", "value")
+		qualities: rg(X(n.qualities)?.value),
+		worn: Ih(n.worn) || Vh(n, "worn", "value")
 	};
 }
-function cg(e) {
+function Sg(e) {
 	let t = X(e.armour);
-	return ig.map(({ key: e, label: n }) => ({
-		armourPoints: Eh(X(t?.[e])?.value) ?? Eh(t?.[e]) ?? 0,
+	return vg.map(({ key: e, label: n }) => ({
+		armourPoints: Rh(X(t?.[e])?.value) ?? Rh(t?.[e]) ?? 0,
 		key: e,
 		label: n
 	}));
 }
 //#endregion
 //#region src/module/wfrp4e/player/details.ts
-var lg = [
+var Cg = [
 	["gender", "Gender"],
 	["age", "Age"],
 	["height", "Height"],
@@ -6231,7 +6301,7 @@ var lg = [
 	["starsign", "Star sign"],
 	["size", "Size"]
 ];
-function ug(e) {
+function wg(e) {
 	let t = X(e["personal-ambitions"]), n = X(e["party-ambitions"]);
 	return {
 		biography: Q(e, "biography", "value"),
@@ -6243,8 +6313,8 @@ function ug(e) {
 		personalShortTermAmbition: Z(t?.["short-term"])
 	};
 }
-function dg(e) {
-	return lg.map(([t, n]) => ({
+function Tg(e) {
+	return Cg.map(([t, n]) => ({
 		key: t,
 		label: n,
 		value: Q(e, t, "value")
@@ -6252,7 +6322,7 @@ function dg(e) {
 }
 //#endregion
 //#region src/module/wfrp4e/player/effects.ts
-var fg = [
+var Eg = [
 	["ablaze", "Ablaze"],
 	["bleeding", "Bleeding"],
 	["blinded", "Blinded"],
@@ -6265,23 +6335,23 @@ var fg = [
 	["stunned", "Stunned"],
 	["surprised", "Surprised"],
 	["unconscious", "Unconscious"]
-], pg = new Set([
+], Dg = new Set([
 	"critical",
 	"disease",
 	"injury",
 	"mutation",
 	"psychology"
 ]);
-function mg(e, t) {
-	let n = Wh(e.appliedEffects ?? e.effects);
+function Og(e, t) {
+	let n = ng(e.appliedEffects ?? e.effects);
 	return {
-		active: n.map(gg).filter((e) => e !== void 0).sort(bh),
-		ailments: t.map(_g).filter((e) => e !== void 0).sort(bh),
-		conditions: hg(n),
-		extendedTests: t.map(yg).filter((e) => e !== void 0).sort(bh)
+		active: n.map(Ag).filter((e) => e !== void 0).sort(jh),
+		ailments: t.map(jg).filter((e) => e !== void 0).sort(jh),
+		conditions: kg(n),
+		extendedTests: t.map(Ng).filter((e) => e !== void 0).sort(jh)
 	};
 }
-function hg(e) {
+function kg(e) {
 	let t = /* @__PURE__ */ new Map();
 	for (let n of e) {
 		let e = X(n);
@@ -6290,44 +6360,44 @@ function hg(e) {
 		i && t.set(i, {
 			id: i,
 			imageUrl: Z(e.img || e.icon),
-			name: Z(e.name) || bg(i),
-			value: Eh(e.conditionValue) ?? Eh(r?.value) ?? 1
+			name: Z(e.name) || Pg(i),
+			value: Rh(e.conditionValue) ?? Rh(r?.value) ?? 1
 		});
 	}
-	return fg.map(([e, n]) => t.get(e) ?? {
+	return Eg.map(([e, n]) => t.get(e) ?? {
 		id: e,
 		imageUrl: "",
 		name: n,
 		value: 0
 	});
 }
-function gg(e) {
+function Ag(e) {
 	let t = X(e);
 	if (!t || t.isCondition === !0 || t.show === !1) return;
 	let n = Z(t.id), r = Z(t.name);
 	if (!n || !r) return;
 	let i = X(t.system);
 	return {
-		descriptionHtml: Z(t.description) || Ah(i) || Z(i?.description),
-		disabled: Th(t.disabled),
+		descriptionHtml: Z(t.description) || Hh(i) || Z(i?.description),
+		disabled: Ih(t.disabled),
 		id: n,
 		imageUrl: Z(t.img || t.icon),
 		name: r,
 		source: Z(t.sourceName || t.origin)
 	};
 }
-function _g(e) {
-	let t = X(e), n = Z(t?.type), r = Hh(e);
-	if (!(!t || !r || !pg.has(n))) return {
-		descriptionHtml: Ah(r),
-		details: vg(n, r),
-		id: Uh(e),
+function jg(e) {
+	let t = X(e), n = Z(t?.type), r = eg(e);
+	if (!(!t || !r || !Dg.has(n))) return {
+		descriptionHtml: Hh(r),
+		details: Mg(n, r),
+		id: tg(e),
 		imageUrl: Z(t.img),
 		name: Z(t.name),
-		type: bg(n)
+		type: Pg(n)
 	};
 }
-function vg(e, t) {
+function Mg(e, t) {
 	return ({
 		critical: [
 			["Wounds", "wounds"],
@@ -6351,57 +6421,57 @@ function vg(e, t) {
 		value: Q(t, n, "value")
 	})).filter((e) => e.value);
 }
-function yg(e) {
-	let t = X(e), n = Hh(e);
+function Ng(e) {
+	let t = X(e), n = eg(e);
 	if (t?.type !== "extendedTest" || !n) return;
 	let r = X(n.SL);
 	return {
-		currentSL: Eh(r?.current) ?? 0,
-		descriptionHtml: Ah(n),
+		currentSL: Rh(r?.current) ?? 0,
+		descriptionHtml: Hh(n),
 		difficulty: Q(n, "difficulty", "value"),
-		id: Uh(e),
+		id: tg(e),
 		imageUrl: Z(t.img),
 		name: Z(t.name),
-		targetSL: Eh(r?.target) ?? 0,
+		targetSL: Rh(r?.target) ?? 0,
 		test: Q(n, "test", "value")
 	};
 }
-function bg(e) {
+function Pg(e) {
 	return e.replaceAll(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (e) => e.toUpperCase());
 }
 //#endregion
 //#region src/module/wfrp4e/player/magic.ts
-function xg(e) {
+function Fg(e) {
 	return {
-		prayers: e.map(Cg).filter((e) => e !== void 0).sort(bh),
-		spells: e.map(Sg).filter((e) => e !== void 0).sort(bh)
+		prayers: e.map(Lg).filter((e) => e !== void 0).sort(jh),
+		spells: e.map(Ig).filter((e) => e !== void 0).sort(jh)
 	};
 }
-function Sg(e) {
-	let t = X(e), n = Hh(e);
+function Ig(e) {
+	let t = X(e), n = eg(e);
 	if (!(t?.type !== "spell" || !n)) return {
-		castingNumber: Dh(n, "cn", "value") ?? 0,
-		channellingSL: Dh(n, "cn", "SL") ?? 0,
+		castingNumber: zh(n, "cn", "value") ?? 0,
+		channellingSL: zh(n, "cn", "SL") ?? 0,
 		damage: Q(n, "damage", "value"),
-		descriptionHtml: Ah(n),
+		descriptionHtml: Hh(n),
 		duration: Q(n, "duration", "value"),
-		id: Uh(e),
+		id: tg(e),
 		imageUrl: Z(t.img),
 		lore: Q(n, "lore", "value"),
-		memorized: kh(n, "memorized", "value"),
+		memorized: Vh(n, "memorized", "value"),
 		name: Z(t.name),
 		range: Q(n, "range", "value"),
 		target: Q(n, "target", "value")
 	};
 }
-function Cg(e) {
-	let t = X(e), n = Hh(e);
+function Lg(e) {
+	let t = X(e), n = eg(e);
 	if (!(t?.type !== "prayer" || !n)) return {
 		damage: Q(n, "damage", "value"),
-		descriptionHtml: Ah(n),
+		descriptionHtml: Hh(n),
 		duration: Q(n, "duration", "value"),
 		god: Q(n, "god", "value"),
-		id: Uh(e),
+		id: tg(e),
 		imageUrl: Z(t.img),
 		name: Z(t.name),
 		range: Q(n, "range", "value"),
@@ -6411,7 +6481,7 @@ function Cg(e) {
 }
 //#endregion
 //#region src/module/wfrp4e/player-character-adapter.ts
-var wg = [
+var Rg = [
 	[
 		"WS",
 		"ws",
@@ -6463,7 +6533,7 @@ var wg = [
 		"Fellowship"
 	]
 ];
-function Tg() {
+function zg() {
 	let e = game.user.character;
 	if (!e) return { status: "missing" };
 	if (e.type !== "character") return {
@@ -6473,7 +6543,7 @@ function Tg() {
 	};
 	let t;
 	try {
-		t = Eg(e, Zh());
+		t = Bg(e, dg());
 	} catch (t) {
 		return {
 			actorName: e.name,
@@ -6490,72 +6560,72 @@ function Tg() {
 		status: "unsupported"
 	};
 }
-function Eg(e, t) {
-	let n = X(e.system), r = X(n?.status), i = X(n?.details), a = kg(r, "wounds", "Wounds");
+function Bg(e, t) {
+	let n = X(e.system), r = X(n?.status), i = X(n?.details), a = Ug(r, "wounds", "Wounds");
 	if (!n || !r || !i || !a) return;
-	let o = Dg(n, t.characteristic);
+	let o = Vg(n, t.characteristic);
 	if (!o) return;
-	let s = Bh(e);
+	let s = Qh(e);
 	return {
-		career: Yh(i, s),
+		career: sg(i, s),
 		characteristics: o,
-		combat: ag(r, s),
-		effects: mg(e, s),
-		experience: Ag(i),
+		combat: yg(r, s),
+		effects: Og(e, s),
+		experience: Wg(i),
 		god: Q(i, "god", "value"),
 		id: e.id,
 		imageUrl: e.img,
-		inventory: Mh(r, s),
-		magic: xg(s),
+		inventory: Wh(r, s),
+		magic: Fg(s),
 		movement: {
-			move: Oh(i, "move", "value") ?? 0,
-			run: Oh(i, "move", "run") ?? 0,
-			walk: Oh(i, "move", "walk") ?? 0
+			move: Bh(i, "move", "value") ?? 0,
+			run: Bh(i, "move", "run") ?? 0,
+			walk: Bh(i, "move", "walk") ?? 0
 		},
 		name: e.name,
-		notes: ug(i),
-		personalDetails: dg(i),
-		resources: Og(r),
-		skills: jg(s, o, t.skill),
+		notes: wg(i),
+		personalDetails: Tg(i),
+		resources: Hg(r),
+		skills: Gg(s, o, t.skill),
 		species: Q(i, "species", "value"),
-		talents: qh(s),
-		traits: Jh(s),
+		talents: ag(s),
+		traits: og(s),
 		wounds: a
 	};
 }
-function Dg(e, t) {
+function Vg(e, t) {
 	let n = X(e.characteristics);
 	if (!n) return;
-	let r = wg.map(([e, r, i]) => {
-		let a = X(n[r]), o = wh(a?.value);
+	let r = Rg.map(([e, r, i]) => {
+		let a = X(n[r]), o = Fh(a?.value);
 		return o === void 0 ? void 0 : {
 			abbreviation: e,
-			advances: wh(a?.advances) ?? 0,
-			bonus: wh(a?.bonus) ?? Math.floor(o / 10),
+			advances: Fh(a?.advances) ?? 0,
+			bonus: Fh(a?.bonus) ?? Math.floor(o / 10),
 			key: r,
 			label: i,
-			nextAdvanceCost: _h(t, wh(a?.advances) ?? 0, wh(a?.costModifier) ?? 0),
+			nextAdvanceCost: Pu(t, Fh(a?.advances) ?? 0, Fh(a?.costModifier) ?? 0),
 			value: o
 		};
 	}).filter((e) => e !== void 0);
-	return r.length === wg.length ? r : void 0;
+	return r.length === Rg.length ? r : void 0;
 }
-function Og(e) {
+function Hg(e) {
 	return [
-		kg(e, "fortune", "Fortune"),
-		kg(e, "fate", "Fate"),
-		kg(e, "resolve", "Resolve"),
-		kg(e, "resilience", "Resilience"),
-		kg(e, "advantage", "Advantage"),
-		kg(e, "criticalWounds", "Critical wounds"),
-		kg(e, "corruption", "Corruption"),
-		kg(e, "sin", "Sin")
+		Ug(e, "fortune", "Fortune"),
+		Ug(e, "fate", "Fate"),
+		Ug(e, "resolve", "Resolve"),
+		Ug(e, "resilience", "Resilience"),
+		Ug(e, "advantage", "Advantage"),
+		Ug(e, "criticalWounds", "Critical wounds"),
+		Ug(e, "corruption", "Corruption"),
+		Ug(e, "sin", "Sin")
 	].filter((e) => e !== void 0);
 }
-function kg(e, t, n) {
-	let r = X(e?.[t]), i = Eh(r?.value);
+function Ug(e, t, n) {
+	let r = X(e?.[t]), i = Rh(r?.value);
 	if (i === void 0) return;
-	let a = Eh(r?.max);
+	let a = Rh(r?.max);
 	return a === void 0 ? {
 		current: i,
 		key: t,
@@ -6567,38 +6637,38 @@ function kg(e, t, n) {
 		maximum: a
 	};
 }
-function Ag(e) {
-	let t = X(e.experience), n = wh(t?.total) ?? 0, r = wh(t?.spent) ?? 0;
+function Wg(e) {
+	let t = X(e.experience), n = Fh(t?.total) ?? 0, r = Fh(t?.spent) ?? 0;
 	return {
 		available: Math.max(0, n - r),
 		spent: r,
 		total: n
 	};
 }
-function jg(e, t, n) {
+function Gg(e, t, n) {
 	let r = new Map(t.map((e) => [e.key, e.value]));
 	return e.filter((e) => e.type === "skill").map((e) => {
-		let t = Hh(e), i = Q(t, "characteristic", "value"), a = Dh(t, "advances", "value") ?? 0, o = Dh(t, "modifier", "value") ?? 0;
+		let t = eg(e), i = Q(t, "characteristic", "value"), a = zh(t, "advances", "value") ?? 0, o = zh(t, "modifier", "value") ?? 0;
 		return {
 			advances: a,
 			characteristic: i.toUpperCase(),
-			descriptionHtml: Ah(t),
+			descriptionHtml: Hh(t),
 			id: e.id,
 			name: e.name,
-			nextAdvanceCost: _h(n, a, Dh(t, "advances", "costModifier") ?? 0),
-			total: Dh(t, "total", "value") ?? (r.get(i) ?? 0) + a + o
+			nextAdvanceCost: Pu(n, a, zh(t, "advances", "costModifier") ?? 0),
+			total: zh(t, "total", "value") ?? (r.get(i) ?? 0) + a + o
 		};
-	}).sort(bh);
+	}).sort(jh);
 }
 //#endregion
 //#region src/functions/player-sheet/resources.ts
-function Mg(e, t, n) {
+function Kg(e, t, n) {
 	if (![e, t].every(Number.isFinite) || n !== void 0 && !Number.isFinite(n)) throw Error("The resource values are invalid.");
 	return Math.max(0, Math.min(n ?? Infinity, e + t));
 }
 //#endregion
 //#region src/module/wfrp4e/player/notes.ts
-async function Ng(e) {
+async function qg(e) {
 	await $().update({
 		"system.details.biography.value": e.biography,
 		"system.details.motivation.value": e.motivation,
@@ -6611,7 +6681,7 @@ async function Ng(e) {
 }
 //#endregion
 //#region src/module/wfrp4e/player/actions.ts
-var Pg = new Set([
+var Jg = new Set([
 	"corruption",
 	"criticalWounds",
 	"fate",
@@ -6619,123 +6689,134 @@ var Pg = new Set([
 	"resilience",
 	"resolve",
 	"sin"
-]), Fg = {
+]), Yg = {
 	addCondition: async (e) => {
 		let t = $();
-		Ug(t.addCondition, "Condition controls are unavailable."), await t.addCondition(e, 1);
+		i_(t.addCondition, "Condition controls are unavailable."), await t.addCondition(e, 1);
 	},
-	adjustResource: Lg,
-	advanceCharacteristic: $h,
-	advanceSkill: eg,
-	advanceTalent: tg,
-	createInventoryItem: Rg,
-	deleteInventoryItem: zg,
-	moveInventoryItem: Bg,
-	openCareerSelector: Hg,
-	reloadWeapon: Vg,
+	addCareerSkill: Xg,
+	adjustResource: Qg,
+	advanceCharacteristic: pg,
+	advanceSkill: mg,
+	advanceTalent: hg,
+	createInventoryItem: $g,
+	deleteInventoryItem: e_,
+	moveInventoryItem: t_,
+	openCareerSelector: r_,
+	reloadWeapon: n_,
 	removeCondition: async (e) => {
 		let t = $();
-		Ug(t.removeCondition, "Condition controls are unavailable."), await t.removeCondition(e, 1);
+		i_(t.removeCondition, "Condition controls are unavailable."), await t.removeCondition(e, 1);
 	},
 	rollCharacteristic: async (e) => {
 		let t = $();
-		Ug(t.setupCharacteristic, "Characteristic tests are unavailable."), await Ig(() => t.setupCharacteristic(e));
+		i_(t.setupCharacteristic, "Characteristic tests are unavailable."), await Zg(() => t.setupCharacteristic(e));
 	},
 	rollExtendedTest: async (e) => {
-		let t = $(), n = Vh(t, e, ["extendedTest"]);
-		Ug(t.setupExtendedTest, "Extended tests are unavailable."), await t.setupExtendedTest(n);
+		let t = $(), n = $h(t, e, ["extendedTest"]);
+		i_(t.setupExtendedTest, "Extended tests are unavailable."), await t.setupExtendedTest(n);
 	},
 	rollPrayer: async (e) => {
-		let t = $(), n = Vh(t, e, ["prayer"]);
-		Ug(t.setupPrayer, "Prayer tests are unavailable."), await Ig(() => t.setupPrayer(n));
+		let t = $(), n = $h(t, e, ["prayer"]);
+		i_(t.setupPrayer, "Prayer tests are unavailable."), await Zg(() => t.setupPrayer(n));
 	},
 	rollSkill: async (e) => {
-		let t = $(), n = Vh(t, e, ["skill"]);
-		Ug(t.setupSkill, "Skill tests are unavailable."), await Ig(() => t.setupSkill(n));
+		let t = $(), n = $h(t, e, ["skill"]);
+		i_(t.setupSkill, "Skill tests are unavailable."), await Zg(() => t.setupSkill(n));
 	},
 	rollSpell: async (e, t) => {
-		let n = $(), r = Vh(n, e, ["spell"]), i = t === "channel" ? n.setupChannell : n.setupCast;
-		Ug(i, `${t === "channel" ? "Channelling" : "Casting"} is unavailable.`), await Ig(() => i.call(n, r));
+		let n = $(), r = $h(n, e, ["spell"]), i = t === "channel" ? n.setupChannell : n.setupCast;
+		i_(i, `${t === "channel" ? "Channelling" : "Casting"} is unavailable.`), await Zg(() => i.call(n, r));
 	},
 	rollTrait: async (e) => {
-		let t = $(), n = Vh(t, e, ["trait"]);
-		Ug(t.setupTrait, "Trait tests are unavailable."), await Ig(() => t.setupTrait(n));
+		let t = $(), n = $h(t, e, ["trait"]);
+		i_(t.setupTrait, "Trait tests are unavailable."), await Zg(() => t.setupTrait(n));
 	},
 	rollWeapon: async (e) => {
-		let t = $(), n = Vh(t, e, ["weapon"]);
-		Ug(t.setupWeapon, "Weapon tests are unavailable."), await Ig(() => t.setupWeapon(n));
+		let t = $(), n = $h(t, e, ["weapon"]);
+		i_(t.setupWeapon, "Weapon tests are unavailable."), await Zg(() => t.setupWeapon(n));
 	},
 	setCareerComplete: async (e, t) => {
-		await Vh($(), e, ["career"]).update({ "system.complete.value": t });
+		await $h($(), e, ["career"]).update({ "system.complete.value": t });
 	},
-	toggleInventoryEquipped: Ph,
-	updateInventoryQuantity: Nh,
-	updateNotes: Ng
+	toggleInventoryEquipped: Kh,
+	updateInventoryQuantity: Gh,
+	updateNotes: qg
 };
-async function Ig(e) {
+async function Xg(e) {
+	let t = $(), n = e.trim().toLowerCase();
+	if (!n) throw Error("That career skill is unavailable.");
+	if (Qh(t).some((e) => e.type === "skill" && e.name.trim().toLowerCase() === n)) return;
+	let r = game.wfrp4e?.utility?.findSkill;
+	i_(r, "The WFRP skill library is unavailable.");
+	let i = (await r(e)).toObject?.();
+	if (!i) throw Error(`The ${e} skill could not be prepared.`);
+	i_(t.createEmbeddedDocuments, "Adding skills is unavailable."), await t.createEmbeddedDocuments("Item", [i], { career: !0 });
+}
+async function Zg(e) {
 	let t = await e();
 	if (!t || typeof t.roll != "function") throw Error("The WFRP test setup was cancelled or unavailable.");
 	await t.roll();
 }
-async function Lg(e, t) {
+async function Qg(e, t) {
 	let n = $();
 	if (e === "wounds") {
-		Ug(n.modifyWounds, "Wound controls are unavailable."), await n.modifyWounds(t);
+		i_(n.modifyWounds, "Wound controls are unavailable."), await n.modifyWounds(t);
 		return;
 	}
 	if (e === "advantage") {
-		Ug(n.modifyAdvantage, "Advantage controls are unavailable."), await n.modifyAdvantage(t);
+		i_(n.modifyAdvantage, "Advantage controls are unavailable."), await n.modifyAdvantage(t);
 		return;
 	}
-	if (!Pg.has(e)) throw Error("That resource cannot be changed here.");
-	let r = X(X(X(n.system)?.status)?.[e]), i = Eh(r?.value), a = Eh(r?.max);
+	if (!Jg.has(e)) throw Error("That resource cannot be changed here.");
+	let r = X(X(X(n.system)?.status)?.[e]), i = Rh(r?.value), a = Rh(r?.max);
 	if (i === void 0) throw Error("That resource is no longer available.");
-	let o = Mg(i, t, a);
+	let o = Kg(i, t, a);
 	await n.update({ [`system.status.${e}.value`]: o });
 }
-async function Rg(e) {
+async function $g(e) {
 	let t = $(), n = e.name.trim();
 	if (!n) throw Error("Enter a name for the new item.");
-	Ug(t.createEmbeddedDocuments, "Creating items is unavailable."), await t.createEmbeddedDocuments("Item", [{
+	i_(t.createEmbeddedDocuments, "Creating items is unavailable."), await t.createEmbeddedDocuments("Item", [{
 		name: n,
 		type: e.type
 	}]);
 }
-async function zg(e) {
+async function e_(e) {
 	let t = $();
-	Vh(t, e, [
+	$h(t, e, [
 		"ammunition",
 		"armour",
 		"container",
 		"money",
 		"trapping",
 		"weapon"
-	]), Ug(t.deleteEmbeddedDocuments, "Deleting items is unavailable."), await t.deleteEmbeddedDocuments("Item", [e]);
+	]), i_(t.deleteEmbeddedDocuments, "Deleting items is unavailable."), await t.deleteEmbeddedDocuments("Item", [e]);
 }
-async function Bg(e, t) {
-	let n = $(), r = Vh(n, e);
-	t && Vh(n, t, ["container"]), await r.update({ "system.location.value": t });
+async function t_(e, t) {
+	let n = $(), r = $h(n, e);
+	t && $h(n, t, ["container"]), await r.update({ "system.location.value": t });
 }
-async function Vg(e) {
-	let t = $(), n = Vh(t, e, ["weapon"]);
+async function n_(e) {
+	let t = $(), n = $h(t, e, ["weapon"]);
 	if (t.rollReloadTest) await t.rollReloadTest(n);
 	else if (t.checkReloadExtendedTest) await t.checkReloadExtendedTest(n, t);
 	else throw Error("Reload tests are unavailable.");
 }
-async function Hg() {
+async function r_() {
 	let e = $(), t = game.wfrp4e?.apps?.CareerSelector;
 	if (!t) throw Error("The WFRP career selector is unavailable.");
 	await Promise.resolve(new t(e).render(!0));
 }
-function Ug(e, t) {
+function i_(e, t) {
 	if (typeof e != "function") throw Error(t);
 }
 //#endregion
 //#region src/module/wfrp4e/player/activity.ts
-function Wg() {
-	return Wh(game.messages).map(Gg).filter((e) => e !== void 0).sort((e, t) => e.timestamp - t.timestamp).slice(-80);
+function a_() {
+	return ng(game.messages).map(o_).filter((e) => e !== void 0).sort((e, t) => e.timestamp - t.timestamp).slice(-80);
 }
-function Gg(e) {
+function o_(e) {
 	let t = X(e);
 	if (!t || t.visible !== !0 || t.isContentVisible !== !0) return;
 	let n = Z(t.id), r = Z(t.content);
@@ -6746,13 +6827,13 @@ function Gg(e) {
 		contentHtml: r,
 		flavor: Z(t.flavor),
 		id: n,
-		isOwn: o ? o === game.user.id : Th(t.isAuthor),
-		timestamp: Eh(t.timestamp ?? t.time) ?? 0
+		isOwn: o ? o === game.user.id : Ih(t.isAuthor),
+		timestamp: Rh(t.timestamp ?? t.time) ?? 0
 	};
 }
 //#endregion
 //#region src/module/apps/player-shell/PlayerShellApplication.ts
-var Kg = class extends il {
+var s_ = class extends il {
 	#e = [];
 	#t = "";
 	#n = [];
@@ -6775,13 +6856,13 @@ var Kg = class extends il {
 		}
 	};
 	getVueComponent() {
-		return gh;
+		return Ah;
 	}
 	getVueProps() {
 		return {
-			actions: Fg,
-			activity: Wg(),
-			characterState: Tg(),
+			actions: Yg,
+			activity: a_(),
+			characterState: zg(),
 			journalError: this.#t,
 			journals: this.#n
 		};
@@ -6845,26 +6926,26 @@ var Kg = class extends il {
 			this.#r = !0;
 		}
 	}
-}, qg = { class: "starter-workbench" }, Jg = {
+}, c_ = { class: "starter-workbench" }, l_ = {
 	class: "starter-workbench__panel",
 	"aria-labelledby": "status-heading"
-}, Yg = { class: "starter-workbench__facts" }, Xg = /* @__PURE__ */ L({
+}, u_ = { class: "starter-workbench__facts" }, d_ = /* @__PURE__ */ L({
 	__name: "StarterWorkbenchApp",
 	props: {
 		hostName: { default: "Unknown user" },
 		systemId: { default: "preview" }
 	},
 	setup(e) {
-		return (t, n) => (B(), V("main", qg, [
+		return (t, n) => (B(), V("main", c_, [
 			n[3] ||= U("header", { class: "starter-workbench__header" }, [U("p", { class: "starter-workbench__eyebrow" }, "Drowsy's WFRP4e On The Go"), U("h1", null, "Diagnostic Workbench")], -1),
-			U("section", Jg, [n[2] ||= U("h2", { id: "status-heading" }, "Runtime Context", -1), U("dl", Yg, [U("div", null, [n[0] ||= U("dt", null, "User", -1), U("dd", null, E(e.hostName), 1)]), U("div", null, [n[1] ||= U("dt", null, "System", -1), U("dd", null, E(e.systemId), 1)])])]),
+			U("section", l_, [n[2] ||= U("h2", { id: "status-heading" }, "Runtime Context", -1), U("dl", u_, [U("div", null, [n[0] ||= U("dt", null, "User", -1), U("dd", null, E(e.hostName), 1)]), U("div", null, [n[1] ||= U("dt", null, "System", -1), U("dd", null, E(e.systemId), 1)])])]),
 			n[4] ||= U("section", {
 				class: "starter-workbench__panel",
 				"aria-labelledby": "next-heading"
 			}, [U("h2", { id: "next-heading" }, "Current Slice"), U("p", null, " On The Go now routes enabled GMs to mobile prep and enabled players to a read-only assigned character sheet. Keep Foundry document work in the module layer, then pass plain data into Vue. ")], -1)
 		]));
 	}
-}), Zg = class extends il {
+}), f_ = class extends il {
 	static DEFAULT_OPTIONS = {
 		id: `${Y}-starter-workbench`,
 		tag: "section",
@@ -6879,7 +6960,7 @@ var Kg = class extends il {
 		}
 	};
 	getVueComponent() {
-		return Xg;
+		return d_;
 	}
 	getVueProps() {
 		return {
@@ -6890,48 +6971,48 @@ var Kg = class extends il {
 };
 //#endregion
 //#region src/module/api/create-module-api.ts
-function Qg() {
+function p_() {
 	return {
 		getMobileUiMode: gc,
 		isMobileUiActive() {
 			return gc() !== "none";
 		},
 		async openDiagnosticWorkbench() {
-			await new Zg().render(!0);
+			await new f_().render(!0);
 		},
 		async openMobileJournals() {
 			await new ul().render(!0);
 		},
 		async openMobileUi() {
-			await new (game.user.isGM ? ul : Kg)().render(!0);
+			await new (game.user.isGM ? ul : s_)().render(!0);
 		},
 		async openPlayerUi() {
-			await new Kg().render(!0);
+			await new s_().render(!0);
 		}
 	};
 }
 //#endregion
 //#region src/module/api/register-module-api.ts
-function $g() {
+function m_() {
 	let e = game.modules.get(Y);
 	if (!e) throw Error(`Foundry module registry entry was not found for ${Y}.`);
-	e.api = Qg();
+	e.api = p_();
 }
 //#endregion
 //#region src/module/open-mobile-ui.ts
-async function e_() {
+async function h_() {
 	let e = gc();
-	e === "gm" && await new ul().render(!0), e === "player" && await new Kg().render(!0);
+	e === "gm" && await new ul().render(!0), e === "player" && await new s_().render(!0);
 }
 //#endregion
 //#region src/view/apps/activation-settings/ActivationSettingsApp.vue?vue&type=script&setup=true&lang.ts
-var t_ = { class: "wfrp-on-the-go-settings" }, n_ = {
+var g_ = { class: "wfrp-on-the-go-settings" }, __ = {
 	key: 0,
 	class: "wfrp-on-the-go-settings__users"
-}, r_ = ["value"], i_ = {
+}, v_ = ["value"], y_ = {
 	key: 1,
 	class: "wfrp-on-the-go-settings__empty"
-}, a_ = { class: "wfrp-on-the-go-settings__actions" }, o_ = { "aria-live": "polite" }, s_ = ["disabled"], c_ = /* @__PURE__ */ L({
+}, b_ = { class: "wfrp-on-the-go-settings__actions" }, x_ = { "aria-live": "polite" }, S_ = ["disabled"], C_ = /* @__PURE__ */ L({
 	__name: "ActivationSettingsApp",
 	props: {
 		saveEnabledUserIds: { type: Function },
@@ -6953,10 +7034,10 @@ var t_ = { class: "wfrp-on-the-go-settings" }, n_ = {
 		function s() {
 			return t.users.filter((e) => e.enabled).map((e) => e.id);
 		}
-		return (t, s) => (B(), V("main", t_, [s[1] ||= U("header", { class: "wfrp-on-the-go-settings__header" }, [U("p", { class: "wfrp-on-the-go-settings__eyebrow" }, "Drowsy's WFRP4e On The Go"), U("h1", null, "Enabled Users")], -1), U("form", {
+		return (t, s) => (B(), V("main", g_, [s[1] ||= U("header", { class: "wfrp-on-the-go-settings__header" }, [U("p", { class: "wfrp-on-the-go-settings__eyebrow" }, "Drowsy's WFRP4e On The Go"), U("h1", null, "Enabled Users")], -1), U("form", {
 			class: "wfrp-on-the-go-settings__form",
 			onSubmit: Do(o, ["prevent"])
-		}, [a.value ? (B(), V("div", n_, [(B(!0), V(z, null, R(e.users, (e) => (B(), V("label", {
+		}, [a.value ? (B(), V("div", __, [(B(!0), V(z, null, R(e.users, (e) => (B(), V("label", {
 			key: e.id,
 			class: T(["wfrp-on-the-go-settings__user", { "wfrp-on-the-go-settings__user--current": e.isCurrentUser }])
 		}, [
@@ -6964,16 +7045,16 @@ var t_ = { class: "wfrp-on-the-go-settings" }, n_ = {
 				"onUpdate:modelValue": s[0] ||= (e) => n.value = e,
 				type: "checkbox",
 				value: e.id
-			}, null, 8, r_), [[yo, n.value]]),
+			}, null, 8, v_), [[yo, n.value]]),
 			U("span", null, E(e.name), 1),
 			U("strong", null, E(e.isGm ? "GM" : "Player") + E(e.isCurrentUser ? " · Current" : ""), 1)
-		], 2))), 128))])) : (B(), V("p", i_, "No Foundry users are available.")), U("footer", a_, [U("p", o_, E(i.value ? "Saved" : ""), 1), U("button", {
+		], 2))), 128))])) : (B(), V("p", y_, "No Foundry users are available.")), U("footer", b_, [U("p", x_, E(i.value ? "Saved" : ""), 1), U("button", {
 			type: "submit",
 			class: "tw:dui-btn tw:dui-btn-primary",
 			disabled: r.value || !a.value
-		}, E(r.value ? "Saving" : "Save"), 9, s_)])], 32)]));
+		}, E(r.value ? "Saving" : "Save"), 9, S_)])], 32)]));
 	}
-}), l_ = class extends il {
+}), w_ = class extends il {
 	static DEFAULT_OPTIONS = {
 		id: `${Y}-activation-settings`,
 		tag: "section",
@@ -6988,7 +7069,7 @@ var t_ = { class: "wfrp-on-the-go-settings" }, n_ = {
 		}
 	};
 	getVueComponent() {
-		return c_;
+		return C_;
 	}
 	getVueProps() {
 		return {
@@ -6999,21 +7080,21 @@ var t_ = { class: "wfrp-on-the-go-settings" }, n_ = {
 };
 //#endregion
 //#region src/module/register-module-settings.ts
-function u_() {
+function T_() {
 	lc(), game.settings.registerMenu(Y, "enabledUsers", {
 		name: "WFRP_ON_THE_GO.settings.activation.enabledUsers.name",
 		label: "WFRP_ON_THE_GO.settings.activation.enabledUsers.label",
 		hint: "WFRP_ON_THE_GO.settings.activation.enabledUsers.hint",
 		icon: "fa-solid fa-mobile-screen-button",
 		restricted: !0,
-		type: l_
+		type: w_
 	}), game.settings.registerMenu(Y, "openDiagnosticWorkbench", {
 		name: "WFRP_ON_THE_GO.settings.openDiagnosticWorkbench.name",
 		label: "WFRP_ON_THE_GO.settings.openDiagnosticWorkbench.label",
 		hint: "WFRP_ON_THE_GO.settings.openDiagnosticWorkbench.hint",
 		icon: "fa-solid fa-window-restore",
 		restricted: !0,
-		type: Zg
+		type: f_
 	}), game.settings.registerMenu(Y, "openMobileUi", {
 		name: "WFRP_ON_THE_GO.settings.openMobileUi.name",
 		label: "WFRP_ON_THE_GO.settings.openMobileUi.label",
@@ -7025,20 +7106,20 @@ function u_() {
 }
 //#endregion
 //#region src/module/hooks/register-module-hooks.ts
-function d_() {
+function E_() {
 	Hooks.once("init", () => {
-		u_();
+		T_();
 	}), Hooks.once("ready", async () => {
 		if (game.system.id !== "wfrp4e") {
 			console.warn(`${Y} | Loaded outside ${js}; activation skipped.`);
 			return;
 		}
-		await uc(), $g(), await e_();
+		await uc(), m_(), await h_();
 	});
 }
 //#endregion
 //#region src/main.ts
-d_();
+E_();
 //#endregion
 
 //# sourceMappingURL=wfrp4e-on-the-go.mjs.map

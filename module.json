@@ -2,7 +2,7 @@
   "id": "wfrp4e-on-the-go",
   "title": "Drowsy's WFRP4e On The Go",
   "description": "Mobile-first WFRP4e companion tools for players and GMs in Foundry VTT.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "authors": [
     {
       "name": "Jeremy Glebe"
@@ -35,5 +35,5 @@
   ],
   "url": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go",
   "manifest": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go/releases/latest/download/module.json",
-  "download": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go/releases/download/v0.3.0/module.zip"
+  "download": "https://github.com/jeremyglebe/FoundryVTT-WFRP4e-On-The-Go/releases/download/v0.3.1/module.zip"
 }
