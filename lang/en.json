@@ -11,5 +11,8 @@
   "WFRP_ON_THE_GO.settings.openDiagnosticWorkbench.name": "Diagnostic Workbench",
   "WFRP_ON_THE_GO.settings.openMobileUi.hint": "Open the full-screen GM view on this client.",
   "WFRP_ON_THE_GO.settings.openMobileUi.label": "Open On The Go",
-  "WFRP_ON_THE_GO.settings.openMobileUi.name": "Drowsy's WFRP4e On The Go"
+  "WFRP_ON_THE_GO.settings.openMobileUi.name": "Drowsy's WFRP4e On The Go",
+  "WFRP_ON_THE_GO.settings.openWindowedUi.hint": "Open your GM or Player view in a movable, resizable window while keeping the canvas and Foundry controls visible. Close any full-screen On The Go view with Escape first.",
+  "WFRP_ON_THE_GO.settings.openWindowedUi.label": "Open On The Go Window",
+  "WFRP_ON_THE_GO.settings.openWindowedUi.name": "On The Go Testing Window"
 }
